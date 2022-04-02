@@ -1,9 +1,9 @@
 script_authors('jo_lac', 'Alexandr_Mansory', 'Radiant_Smith', 'FYP', 'drags')
-script_version_number(28)	-- 31.03.2022
--- Alexandr_Mansory - основная идея; jo_lac - основная работа, написание кода; FYP - код clickwarp; drags - код checkip; Radiant_Smith - помощь, идея, код sendresponse, код reconnect.
--- Используя данный скрипт, Вы автоматически подтверждаете то, что берёте на себя всю ответственность за действия, произошедшие при использовании данного скрипта. Авторы данного скрипта не несут ответственности за эти действия. Скрипт посылает запросы в интернет, чтобы получить местоположение игрока по ip. Не является стиллером. Но, используйте на свой страх и риск.
+script_version('01.04.2022')
+-- РСЃРїРѕР»СЊР·СѓСЏ РґР°РЅРЅС‹Р№ СЃРєСЂРёРїС‚, Р’С‹ Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё РїРѕРґС‚РІРµСЂР¶РґР°РµС‚Рµ С‚Рѕ, С‡С‚Рѕ Р±РµСЂС‘С‚Рµ РЅР° СЃРµР±СЏ РІСЃСЋ РѕС‚РІРµС‚СЃС‚РІРµРЅРЅРѕСЃС‚СЊ Р·Р° РґРµР№СЃС‚РІРёСЏ, РїСЂРѕРёР·РѕС€РµРґС€РёРµ РїСЂРё РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРё РґР°РЅРЅРѕРіРѕ СЃРєСЂРёРїС‚Р°. РђРІС‚РѕСЂС‹ РґР°РЅРЅРѕРіРѕ СЃРєСЂРёРїС‚Р° РЅРµ РЅРµСЃСѓС‚ РѕС‚РІРµС‚СЃС‚РІРµРЅРЅРѕСЃС‚Рё Р·Р° СЌС‚Рё РґРµР№СЃС‚РІРёСЏ. РЎРєСЂРёРїС‚ РїРѕСЃС‹Р»Р°РµС‚ Р·Р°РїСЂРѕСЃС‹ РІ РёРЅС‚РµСЂРЅРµС‚, С‡С‚РѕР±С‹ РїРѕР»СѓС‡РёС‚СЊ РјРµСЃС‚РѕРїРѕР»РѕР¶РµРЅРёРµ РёРіСЂРѕРєР° РїРѕ ip. РќРµ СЏРІР»СЏРµС‚СЃСЏ СЃС‚РёР»Р»РµСЂРѕРј. РќРѕ, РёСЃРїРѕР»СЊР·СѓР№С‚Рµ РЅР° СЃРІРѕР№ СЃС‚СЂР°С… Рё СЂРёСЃРє.
 require 'lib.moonloader'
 require 'lib.sampfuncs'
+local table = require 'table'
 local memory = require 'memory'
 local Vector3D = require "vector3d"
 local event = require 'lib.samp.events'
@@ -13,20 +13,21 @@ local encoding = require "encoding"
 local effil = require "effil"
 encoding.default = "cp1251"
 u8 = encoding.UTF8
-local phares = {'мать', 'маму', 'мама', 'МАТЬ', 'МАМУ', 'МАМА', 'батя', 'отец', 'отчим', 'mq', 'mQ', 'Mq', 'MQ'}
-local notphares = {'пойма', 'поднима', 'понима', 'принима', 'снима', 'слома', 'нажима', 'Пойма', 'Поднима', 'Понима', 'Принима', 'Снима', 'Слома', 'Нажима', 'ПОЙМА', 'ПОДНИМА', 'ПОНИМА', 'ПРИНИМА', 'СНИМА', 'СЛОМА', 'НАЖИМА'}
+local phares = {'РјР°С‚СЊ', 'РјР°РјСѓ', 'РјР°РјР°', 'РњРђРўР¬', 'РњРђРњРЈ', 'РњРђРњРђ', 'Р±Р°С‚СЏ', 'РѕС‚РµС†', 'РѕС‚С‡РёРј', 'mq', 'mQ', 'Mq', 'MQ'}
+local notphares = {'РїРѕР№РјР°', 'РїРѕРґРЅРёРјР°', 'РїРѕРЅРёРјР°', 'РїСЂРёРЅРёРјР°', 'СЃРЅРёРјР°', 'СЃР»РѕРјР°', 'РЅР°Р¶РёРјР°', 'РџРѕР№РјР°', 'РџРѕРґРЅРёРјР°', 'РџРѕРЅРёРјР°', 'РџСЂРёРЅРёРјР°', 'РЎРЅРёРјР°', 'РЎР»РѕРјР°', 'РќР°Р¶РёРјР°', 'РџРћР™РњРђ', 'РџРћР”РќРРњРђ', 'РџРћРќРРњРђ', 'РџР РРќРРњРђ', 'РЎРќРРњРђ', 'РЎР›РћРњРђ', 'РќРђР–РРњРђ'}
 local timee, typerep, pip = 0, 0, false
 local color1, color3, color4, color5, acolor1, acolor2, acolor3, acolor4, acolor5 = 0xffaa00, 0xf1f1ab, 0xf4be91, 0x0ffa00, 'ffaa00', '6699ff', 'f1f1ab', 'f4be91', '0ffa00'	-- color format: 0xHEX, acolor format: 'HEX'
-local json = {msg1 = {true, false, {'/msg Уважаемые игроки, в 17:00 пройдёт раздача 50-ти /donat рублей.', '/msg В 21:30 будет опубликован промокод в свободной группе - /info.'}}, msg2 = {true, false, {'/msg Уважаемые игроки, в 19:00 пройдёт мероприятие на 50 реальных рублей.', '/msg В 21:30 будет опубликован промокод в свободной группе - /info.'}},	msg3 = {false, false, {'/msg Уважаемые игроки, в 21:30 будет опубликован промокод в свободной группе - /info.', '/msg Для того, чтобы его ввести, используйте /mm > Ввести промокод', '/msg После введения промокода на Ваш аккаунт будет начислено 50 /donat рублей.'}}, msg4 = {false, false, {'/msg Уважаемые игроки, хочу напомнить, что на форуме имеется раздел "Видеоролики".', '/msg Там вы можете узнать критерии и подать заявление на сотрудничество.'}}, msg5 = {false, false, {'/msg Уважаемые игроки, в связи с техническими проблемами со стороны хостинга', '/msg Раздача 50 (/donat) рублей переноситься на 18:00.'}}, msgk = {true, false, '', '', '', {'/msg Конкурс в группе (/INFO) на , , !'}}, autorep = {true, false, true, false, true, false, true}, amute = true, cmd1 = {false, false, {}, {}}, cmd2 = {false, false, {}, {}}, cmd3 = {false, false, {}, {}}, spam = true, asms = {true}, privet = {'Привет.', 'Привет'}, textsms = {' Привет', ' q ', ' ку', ' привет', ' Q ', ' Ку', ' хай', ' Хай', ' хей', ' Хей', ' й ', ' Й ', ' йй', ' ЙЙ', ' privet', ' Privet'}, iznas = true, sptext = {'sp', 'Sp', 'sP', 'SP', 'сп', 'Сп', 'сП', 'СП'}, notsptext = {'sps', 'Sps', 'SPS', 'спасибо', 'Спасибо', 'СПАСИБО', 'спс', 'Спс', 'СПС', 'Спонсор', 'спонсор', 'трансп', 'transp'}, chat = false, nottextsms = {'%w+_%w+'}}
-local stdcfg = {msg1 = {true, false, {'/msg Уважаемые игроки, в 17:00 пройдёт раздача 50-ти /donat рублей.', '/msg В 21:30 будет опубликован промокод в свободной группе - /info.'}}, msg2 = {true, false, {'/msg Уважаемые игроки, в 19:00 пройдёт мероприятие на 50 реальных рублей.', '/msg В 21:30 будет опубликован промокод в свободной группе - /info.'}},	msg3 = {false, false, {'/msg Уважаемые игроки, в 21:30 будет опубликован промокод в свободной группе - /info.', '/msg Для того, чтобы его ввести, используйте /mm > Ввести промокод', '/msg После введения промокода на Ваш аккаунт будет начислено 50 /donat рублей.'}}, msg4 = {false, false, {'/msg Уважаемые игроки, хочу напомнить, что на форуме имеется раздел "Видеоролики".', '/msg Там вы можете узнать критерии и подать заявление на сотрудничество.'}}, msg5 = {false, false, {'/msg Уважаемые игроки, в связи с техническими проблемами со стороны хостинга', '/msg Раздача 50 (/donat) рублей переноситься на 18:00.'}}, msgk = {true, false, '', '', '', {'/msg Конкурс в группе (/INFO) на '..json.msgk[3]..', '..json.msgk[4]..', '..json.msgk[5]..'!'}}, autorep = {true, false, true, false, true, false, true}, amute = true, cmd1 = {false, false, {}, {}}, cmd2 = {false, false, {}, {}}, cmd3 = {false, false, {}, {}}, spam = true, asms = {true}, privet = {'Привет.', 'Привет'}, textsms = {' Привет', ' q ', ' ку', ' привет', ' Q ', ' Ку', ' хай', ' Хай', ' хей', ' Хей', ' й ', ' Й ', ' йй', ' ЙЙ', ' privet', ' Privet'}, iznas = true, sptext = {'sp', 'Sp', 'sP', 'SP', 'сп', 'Сп', 'сП', 'СП'}, notsptext = {'sps', 'Sps', 'SPS', 'спасибо', 'Спасибо', 'СПАСИБО', 'спс', 'Спс', 'СПС', 'Спонсор', 'спонсор', 'трансп', 'transp'}, chat = false, nottextsms = {'%w+_%w+'}}
+local table1 = {}
+local json = {msg1 = {true, false, {'/msg РЈРІР°Р¶Р°РµРјС‹Рµ РёРіСЂРѕРєРё, РІ 17:00 РїСЂРѕР№РґС‘С‚ СЂР°Р·РґР°С‡Р° 50-С‚Рё /donat СЂСѓР±Р»РµР№.', '/msg Р’ 21:30 Р±СѓРґРµС‚ РѕРїСѓР±Р»РёРєРѕРІР°РЅ РїСЂРѕРјРѕРєРѕРґ РІ СЃРІРѕР±РѕРґРЅРѕР№ РіСЂСѓРїРїРµ - /info.'}}, msg2 = {true, false, {'/msg РЈРІР°Р¶Р°РµРјС‹Рµ РёРіСЂРѕРєРё, РІ 19:00 РїСЂРѕР№РґС‘С‚ РјРµСЂРѕРїСЂРёСЏС‚РёРµ РЅР° 50 СЂРµР°Р»СЊРЅС‹С… СЂСѓР±Р»РµР№.', '/msg Р’ 21:30 Р±СѓРґРµС‚ РѕРїСѓР±Р»РёРєРѕРІР°РЅ РїСЂРѕРјРѕРєРѕРґ РІ СЃРІРѕР±РѕРґРЅРѕР№ РіСЂСѓРїРїРµ - /info.'}},	msg3 = {false, false, {'/msg РЈРІР°Р¶Р°РµРјС‹Рµ РёРіСЂРѕРєРё, РІ 21:30 Р±СѓРґРµС‚ РѕРїСѓР±Р»РёРєРѕРІР°РЅ РїСЂРѕРјРѕРєРѕРґ РІ СЃРІРѕР±РѕРґРЅРѕР№ РіСЂСѓРїРїРµ - /info.', '/msg Р”Р»СЏ С‚РѕРіРѕ, С‡С‚РѕР±С‹ РµРіРѕ РІРІРµСЃС‚Рё, РёСЃРїРѕР»СЊР·СѓР№С‚Рµ /mm > Р’РІРµСЃС‚Рё РїСЂРѕРјРѕРєРѕРґ', '/msg РџРѕСЃР»Рµ РІРІРµРґРµРЅРёСЏ РїСЂРѕРјРѕРєРѕРґР° РЅР° Р’Р°С€ Р°РєРєР°СѓРЅС‚ Р±СѓРґРµС‚ РЅР°С‡РёСЃР»РµРЅРѕ 50 /donat СЂСѓР±Р»РµР№.'}}, msg4 = {false, false, {'/msg РЈРІР°Р¶Р°РµРјС‹Рµ РёРіСЂРѕРєРё, С…РѕС‡Сѓ РЅР°РїРѕРјРЅРёС‚СЊ, С‡С‚Рѕ РЅР° С„РѕСЂСѓРјРµ РёРјРµРµС‚СЃСЏ СЂР°Р·РґРµР» "Р’РёРґРµРѕСЂРѕР»РёРєРё".', '/msg РўР°Рј РІС‹ РјРѕР¶РµС‚Рµ СѓР·РЅР°С‚СЊ РєСЂРёС‚РµСЂРёРё Рё РїРѕРґР°С‚СЊ Р·Р°СЏРІР»РµРЅРёРµ РЅР° СЃРѕС‚СЂСѓРґРЅРёС‡РµСЃС‚РІРѕ.'}}, msg5 = {false, false, {'/msg РЈРІР°Р¶Р°РµРјС‹Рµ РёРіСЂРѕРєРё, РІ СЃРІСЏР·Рё СЃ С‚РµС…РЅРёС‡РµСЃРєРёРјРё РїСЂРѕР±Р»РµРјР°РјРё СЃРѕ СЃС‚РѕСЂРѕРЅС‹ С…РѕСЃС‚РёРЅРіР°', '/msg Р Р°Р·РґР°С‡Р° 50 (/donat) СЂСѓР±Р»РµР№ РїРµСЂРµРЅРѕСЃРёС‚СЊСЃСЏ РЅР° 18:00.'}}, msgk = {true, false, '', '', '', {'/msg РљРѕРЅРєСѓСЂСЃ РІ РіСЂСѓРїРїРµ (/INFO) РЅР° , , !'}}, autorep = {true, false, true, false, true, false, true}, amute = true, cmd1 = {false, false, {}, {}}, cmd2 = {false, false, {}, {}}, cmd3 = {false, false, {}, {}}, spam = true, asms = {true}, privet = {'РџСЂРёРІРµС‚.', 'РџСЂРёРІРµС‚'}, textsms = {' РџСЂРёРІРµС‚', ' q ', ' РєСѓ', ' РїСЂРёРІРµС‚', ' Q ', ' РљСѓ', ' С…Р°Р№', ' РҐР°Р№', ' С…РµР№', ' РҐРµР№', ' Р№ ', ' Р™ ', ' Р№Р№', ' Р™Р™', ' privet', ' Privet'}, iznas = true, sptext = {'sp', 'Sp', 'sP', 'SP', 'СЃРї', 'РЎРї', 'СЃРџ', 'РЎРџ'}, notsptext = {'sps', 'Sps', 'SPS', 'СЃРїР°СЃРёР±Рѕ', 'РЎРїР°СЃРёР±Рѕ', 'РЎРџРђРЎРР‘Рћ', 'СЃРїСЃ', 'РЎРїСЃ', 'РЎРџРЎ', 'РЎРїРѕРЅСЃРѕСЂ', 'СЃРїРѕРЅСЃРѕСЂ', 'С‚СЂР°РЅСЃРї', 'transp'}, chat = false, nottextsms = {'%w+_%w+'}}
+local stdcfg = {msg1 = {true, false, {'/msg РЈРІР°Р¶Р°РµРјС‹Рµ РёРіСЂРѕРєРё, РІ 17:00 РїСЂРѕР№РґС‘С‚ СЂР°Р·РґР°С‡Р° 50-С‚Рё /donat СЂСѓР±Р»РµР№.', '/msg Р’ 21:30 Р±СѓРґРµС‚ РѕРїСѓР±Р»РёРєРѕРІР°РЅ РїСЂРѕРјРѕРєРѕРґ РІ СЃРІРѕР±РѕРґРЅРѕР№ РіСЂСѓРїРїРµ - /info.'}}, msg2 = {true, false, {'/msg РЈРІР°Р¶Р°РµРјС‹Рµ РёРіСЂРѕРєРё, РІ 19:00 РїСЂРѕР№РґС‘С‚ РјРµСЂРѕРїСЂРёСЏС‚РёРµ РЅР° 50 СЂРµР°Р»СЊРЅС‹С… СЂСѓР±Р»РµР№.', '/msg Р’ 21:30 Р±СѓРґРµС‚ РѕРїСѓР±Р»РёРєРѕРІР°РЅ РїСЂРѕРјРѕРєРѕРґ РІ СЃРІРѕР±РѕРґРЅРѕР№ РіСЂСѓРїРїРµ - /info.'}},	msg3 = {false, false, {'/msg РЈРІР°Р¶Р°РµРјС‹Рµ РёРіСЂРѕРєРё, РІ 21:30 Р±СѓРґРµС‚ РѕРїСѓР±Р»РёРєРѕРІР°РЅ РїСЂРѕРјРѕРєРѕРґ РІ СЃРІРѕР±РѕРґРЅРѕР№ РіСЂСѓРїРїРµ - /info.', '/msg Р”Р»СЏ С‚РѕРіРѕ, С‡С‚РѕР±С‹ РµРіРѕ РІРІРµСЃС‚Рё, РёСЃРїРѕР»СЊР·СѓР№С‚Рµ /mm > Р’РІРµСЃС‚Рё РїСЂРѕРјРѕРєРѕРґ', '/msg РџРѕСЃР»Рµ РІРІРµРґРµРЅРёСЏ РїСЂРѕРјРѕРєРѕРґР° РЅР° Р’Р°С€ Р°РєРєР°СѓРЅС‚ Р±СѓРґРµС‚ РЅР°С‡РёСЃР»РµРЅРѕ 50 /donat СЂСѓР±Р»РµР№.'}}, msg4 = {false, false, {'/msg РЈРІР°Р¶Р°РµРјС‹Рµ РёРіСЂРѕРєРё, С…РѕС‡Сѓ РЅР°РїРѕРјРЅРёС‚СЊ, С‡С‚Рѕ РЅР° С„РѕСЂСѓРјРµ РёРјРµРµС‚СЃСЏ СЂР°Р·РґРµР» "Р’РёРґРµРѕСЂРѕР»РёРєРё".', '/msg РўР°Рј РІС‹ РјРѕР¶РµС‚Рµ СѓР·РЅР°С‚СЊ РєСЂРёС‚РµСЂРёРё Рё РїРѕРґР°С‚СЊ Р·Р°СЏРІР»РµРЅРёРµ РЅР° СЃРѕС‚СЂСѓРґРЅРёС‡РµСЃС‚РІРѕ.'}}, msg5 = {false, false, {'/msg РЈРІР°Р¶Р°РµРјС‹Рµ РёРіСЂРѕРєРё, РІ СЃРІСЏР·Рё СЃ С‚РµС…РЅРёС‡РµСЃРєРёРјРё РїСЂРѕР±Р»РµРјР°РјРё СЃРѕ СЃС‚РѕСЂРѕРЅС‹ С…РѕСЃС‚РёРЅРіР°', '/msg Р Р°Р·РґР°С‡Р° 50 (/donat) СЂСѓР±Р»РµР№ РїРµСЂРµРЅРѕСЃРёС‚СЊСЃСЏ РЅР° 18:00.'}}, msgk = {true, false, '', '', '', {'/msg РљРѕРЅРєСѓСЂСЃ РІ РіСЂСѓРїРїРµ (/INFO) РЅР° '..json.msgk[3]..', '..json.msgk[4]..', '..json.msgk[5]..'!'}}, autorep = {true, false, true, false, true, false, true}, amute = true, cmd1 = {false, false, {}, {}}, cmd2 = {false, false, {}, {}}, cmd3 = {false, false, {}, {}}, spam = true, asms = {true}, privet = {'РџСЂРёРІРµС‚.', 'РџСЂРёРІРµС‚'}, textsms = {' РџСЂРёРІРµС‚', ' q ', ' РєСѓ', ' РїСЂРёРІРµС‚', ' Q ', ' РљСѓ', ' С…Р°Р№', ' РҐР°Р№', ' С…РµР№', ' РҐРµР№', ' Р№ ', ' Р™ ', ' Р№Р№', ' Р™Р™', ' privet', ' Privet'}, iznas = true, sptext = {'sp', 'Sp', 'sP', 'SP', 'СЃРї', 'РЎРї', 'СЃРџ', 'РЎРџ'}, notsptext = {'sps', 'Sps', 'SPS', 'СЃРїР°СЃРёР±Рѕ', 'РЎРїР°СЃРёР±Рѕ', 'РЎРџРђРЎРР‘Рћ', 'СЃРїСЃ', 'РЎРїСЃ', 'РЎРџРЎ', 'РЎРїРѕРЅСЃРѕСЂ', 'СЃРїРѕРЅСЃРѕСЂ', 'С‚СЂР°РЅСЃРї', 'transp'}, chat = false, nottextsms = {'%w+_%w+'}}
 if not doesDirectoryExist('moonloader\\config') then createDirectory('moonloader\\config') end
 if not doesFileExist('moonloader\\config\\offhelper.json') then
 	local f = io.open('moonloader\\config\\offhelper.json', 'w')
-	f:write(encodeJson(table))
+	f:write(encodeJson(table1))
 	f:close()
 end
 local f = io.open('moonloader\\config\\offhelper.json', 'r')
-local table = decodeJson(f:read("*a"))
+local table1 = decodeJson(f:read("*a"))
 f:close()
 if not doesFileExist('moonloader\\config\\offhelper_nicks.json') then
 	local a = io.open('moonloader\\config\\offhelper_nicks.json', 'w')
@@ -49,8 +50,8 @@ local keyApply = vk.VK_LBUTTON
 local LIP = {};
 mouseCoordinates = false
 local const = 1100
-local quest = {{'будет лидеру банды за блат', 'будет лидеру и банде за подставу на 3/3', 'будет лидеру, если он онлайн и его банда получила 3/3', 'будет лидеру за читы с твинка', 'будет лидеру и банде, если лидер будет использовать сбив анимации на капте', 'будет лидеру и банде, если лидер будет стрелять с пассажирского сиденья', 'будет лидеру и банде, если лидер будет использовать fly на капте', 'будет лидеру и банде, если лидер будет использовать инвиз на капте'}, {'будет лидеру мафии за блат', 'будет лидеру и мафии за подставу на 3/3', 'будет лидеру, если он онлайн и его мафия получила 3/3', 'будет лидеру за читы с твинка', 'будет игроку и мафии, если игрок будет использовать сбив на бизваре', 'будет лидеру и мафии, если лидер будет стрелять с пассажирского сиденья', 'будет лидеру и мафии, если лидер будет использовать fly на бизваре', 'будет лидеру и банде, если лидер будет использовать инвиз на бизваре', 'будет игроку и мафии за SK во время бизвара', 'будет игроку за афк на бизваре от одной минуты'}, {'будет лидеру гос. структуры за блат', 'будет лидеру за продажу аккаунта за реальную валюту', 'будет лидеру, если его заместитель получит бан', 'будет лидеру за читы с твинка', 'будет лидеру за NonRP/неадекватные названия рангов', 'будет лидеру за принятие игрока с NonRP ником в организацию', 'будет лидеру за то, что он отстоит 2 недели на посту', 'будет лидеру, если у него есть более одной лидерки'}, {'будет за мат в саппорт-чат', 'будет саппорту за ДМ', 'будет саппорту за транслит в ответе', 'будет саппорту за неполноценный ответ', 'будет саппорту за оскорбление следящих за саппортами', 'будет саппорту за накрутку ответов'}}
-local answer = {{'ничего', 'лидеру снятие, от банды по 2 терры всем другим бандам', 'выговор', 'снятие, варн', 'ничего', 'лидеру выговор и джаил/варн (как за ДБ), банде 3/3', 'лидеру снятие и джаил/варн, банде 2/3', 'лидеру снятие и джаил/варн, банде 3/3'}, {'ничего', 'лидеру снятие, от мафии по 2 бизнеса всем другим мафиям', 'выговор', 'снятие, варн', 'игроку джаил/варн, мафии 1/3', 'лидеру выговор и джаил/варн, мафии 1/3', 'лидеру снятие и джаил/варн, мафии 1/3', 'лидеру снятие и джаил/варн, мафии 3/3', 'игроку джаил/варн, мафии 1/3', 'игроку джаил/варн, мафии 1/3'}, {'выговор', 'удаление аккаунта', 'ничего', 'снятие и джаил/варн', '2 выговора', 'выговор', 'админка 7-го уровня', 'снятие всех лидерок'}, {'снятие с саппортки, при повторном нарушении ЧС на 5 дней', 'джаил/варн, выговор', 'выговор', 'выговор', 'снятие, ЧС на 5 дней', 'снятие, ЧС на 5 дней'}}
+local quest = {{'Р±СѓРґРµС‚ Р»РёРґРµСЂСѓ Р±Р°РЅРґС‹ Р·Р° Р±Р»Р°С‚', 'Р±СѓРґРµС‚ Р»РёРґРµСЂСѓ Рё Р±Р°РЅРґРµ Р·Р° РїРѕРґСЃС‚Р°РІСѓ РЅР° 3/3', 'Р±СѓРґРµС‚ Р»РёРґРµСЂСѓ, РµСЃР»Рё РѕРЅ РѕРЅР»Р°Р№РЅ Рё РµРіРѕ Р±Р°РЅРґР° РїРѕР»СѓС‡РёР»Р° 3/3', 'Р±СѓРґРµС‚ Р»РёРґРµСЂСѓ Р·Р° С‡РёС‚С‹ СЃ С‚РІРёРЅРєР°', 'Р±СѓРґРµС‚ Р»РёРґРµСЂСѓ Рё Р±Р°РЅРґРµ, РµСЃР»Рё Р»РёРґРµСЂ Р±СѓРґРµС‚ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ СЃР±РёРІ Р°РЅРёРјР°С†РёРё РЅР° РєР°РїС‚Рµ', 'Р±СѓРґРµС‚ Р»РёРґРµСЂСѓ Рё Р±Р°РЅРґРµ, РµСЃР»Рё Р»РёРґРµСЂ Р±СѓРґРµС‚ СЃС‚СЂРµР»СЏС‚СЊ СЃ РїР°СЃСЃР°Р¶РёСЂСЃРєРѕРіРѕ СЃРёРґРµРЅСЊСЏ', 'Р±СѓРґРµС‚ Р»РёРґРµСЂСѓ Рё Р±Р°РЅРґРµ, РµСЃР»Рё Р»РёРґРµСЂ Р±СѓРґРµС‚ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ fly РЅР° РєР°РїС‚Рµ', 'Р±СѓРґРµС‚ Р»РёРґРµСЂСѓ Рё Р±Р°РЅРґРµ, РµСЃР»Рё Р»РёРґРµСЂ Р±СѓРґРµС‚ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ РёРЅРІРёР· РЅР° РєР°РїС‚Рµ'}, {'Р±СѓРґРµС‚ Р»РёРґРµСЂСѓ РјР°С„РёРё Р·Р° Р±Р»Р°С‚', 'Р±СѓРґРµС‚ Р»РёРґРµСЂСѓ Рё РјР°С„РёРё Р·Р° РїРѕРґСЃС‚Р°РІСѓ РЅР° 3/3', 'Р±СѓРґРµС‚ Р»РёРґРµСЂСѓ, РµСЃР»Рё РѕРЅ РѕРЅР»Р°Р№РЅ Рё РµРіРѕ РјР°С„РёСЏ РїРѕР»СѓС‡РёР»Р° 3/3', 'Р±СѓРґРµС‚ Р»РёРґРµСЂСѓ Р·Р° С‡РёС‚С‹ СЃ С‚РІРёРЅРєР°', 'Р±СѓРґРµС‚ РёРіСЂРѕРєСѓ Рё РјР°С„РёРё, РµСЃР»Рё РёРіСЂРѕРє Р±СѓРґРµС‚ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ СЃР±РёРІ РЅР° Р±РёР·РІР°СЂРµ', 'Р±СѓРґРµС‚ Р»РёРґРµСЂСѓ Рё РјР°С„РёРё, РµСЃР»Рё Р»РёРґРµСЂ Р±СѓРґРµС‚ СЃС‚СЂРµР»СЏС‚СЊ СЃ РїР°СЃСЃР°Р¶РёСЂСЃРєРѕРіРѕ СЃРёРґРµРЅСЊСЏ', 'Р±СѓРґРµС‚ Р»РёРґРµСЂСѓ Рё РјР°С„РёРё, РµСЃР»Рё Р»РёРґРµСЂ Р±СѓРґРµС‚ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ fly РЅР° Р±РёР·РІР°СЂРµ', 'Р±СѓРґРµС‚ Р»РёРґРµСЂСѓ Рё Р±Р°РЅРґРµ, РµСЃР»Рё Р»РёРґРµСЂ Р±СѓРґРµС‚ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ РёРЅРІРёР· РЅР° Р±РёР·РІР°СЂРµ', 'Р±СѓРґРµС‚ РёРіСЂРѕРєСѓ Рё РјР°С„РёРё Р·Р° SK РІРѕ РІСЂРµРјСЏ Р±РёР·РІР°СЂР°', 'Р±СѓРґРµС‚ РёРіСЂРѕРєСѓ Р·Р° Р°С„Рє РЅР° Р±РёР·РІР°СЂРµ РѕС‚ РѕРґРЅРѕР№ РјРёРЅСѓС‚С‹'}, {'Р±СѓРґРµС‚ Р»РёРґРµСЂСѓ РіРѕСЃ. СЃС‚СЂСѓРєС‚СѓСЂС‹ Р·Р° Р±Р»Р°С‚', 'Р±СѓРґРµС‚ Р»РёРґРµСЂСѓ Р·Р° РїСЂРѕРґР°Р¶Сѓ Р°РєРєР°СѓРЅС‚Р° Р·Р° СЂРµР°Р»СЊРЅСѓСЋ РІР°Р»СЋС‚Сѓ', 'Р±СѓРґРµС‚ Р»РёРґРµСЂСѓ, РµСЃР»Рё РµРіРѕ Р·Р°РјРµСЃС‚РёС‚РµР»СЊ РїРѕР»СѓС‡РёС‚ Р±Р°РЅ', 'Р±СѓРґРµС‚ Р»РёРґРµСЂСѓ Р·Р° С‡РёС‚С‹ СЃ С‚РІРёРЅРєР°', 'Р±СѓРґРµС‚ Р»РёРґРµСЂСѓ Р·Р° NonRP/РЅРµР°РґРµРєРІР°С‚РЅС‹Рµ РЅР°Р·РІР°РЅРёСЏ СЂР°РЅРіРѕРІ', 'Р±СѓРґРµС‚ Р»РёРґРµСЂСѓ Р·Р° РїСЂРёРЅСЏС‚РёРµ РёРіСЂРѕРєР° СЃ NonRP РЅРёРєРѕРј РІ РѕСЂРіР°РЅРёР·Р°С†РёСЋ', 'Р±СѓРґРµС‚ Р»РёРґРµСЂСѓ Р·Р° С‚Рѕ, С‡С‚Рѕ РѕРЅ РѕС‚СЃС‚РѕРёС‚ 2 РЅРµРґРµР»Рё РЅР° РїРѕСЃС‚Сѓ', 'Р±СѓРґРµС‚ Р»РёРґРµСЂСѓ, РµСЃР»Рё Сѓ РЅРµРіРѕ РµСЃС‚СЊ Р±РѕР»РµРµ РѕРґРЅРѕР№ Р»РёРґРµСЂРєРё'}, {'Р±СѓРґРµС‚ Р·Р° РјР°С‚ РІ СЃР°РїРїРѕСЂС‚-С‡Р°С‚', 'Р±СѓРґРµС‚ СЃР°РїРїРѕСЂС‚Сѓ Р·Р° Р”Рњ', 'Р±СѓРґРµС‚ СЃР°РїРїРѕСЂС‚Сѓ Р·Р° С‚СЂР°РЅСЃР»РёС‚ РІ РѕС‚РІРµС‚Рµ', 'Р±СѓРґРµС‚ СЃР°РїРїРѕСЂС‚Сѓ Р·Р° РЅРµРїРѕР»РЅРѕС†РµРЅРЅС‹Р№ РѕС‚РІРµС‚', 'Р±СѓРґРµС‚ СЃР°РїРїРѕСЂС‚Сѓ Р·Р° РѕСЃРєРѕСЂР±Р»РµРЅРёРµ СЃР»РµРґСЏС‰РёС… Р·Р° СЃР°РїРїРѕСЂС‚Р°РјРё', 'Р±СѓРґРµС‚ СЃР°РїРїРѕСЂС‚Сѓ Р·Р° РЅР°РєСЂСѓС‚РєСѓ РѕС‚РІРµС‚РѕРІ'}}
+local answer = {{'РЅРёС‡РµРіРѕ', 'Р»РёРґРµСЂСѓ СЃРЅСЏС‚РёРµ, РѕС‚ Р±Р°РЅРґС‹ РїРѕ 2 С‚РµСЂСЂС‹ РІСЃРµРј РґСЂСѓРіРёРј Р±Р°РЅРґР°Рј', 'РІС‹РіРѕРІРѕСЂ', 'СЃРЅСЏС‚РёРµ, РІР°СЂРЅ', 'РЅРёС‡РµРіРѕ', 'Р»РёРґРµСЂСѓ РІС‹РіРѕРІРѕСЂ Рё РґР¶Р°РёР»/РІР°СЂРЅ (РєР°Рє Р·Р° Р”Р‘), Р±Р°РЅРґРµ 3/3', 'Р»РёРґРµСЂСѓ СЃРЅСЏС‚РёРµ Рё РґР¶Р°РёР»/РІР°СЂРЅ, Р±Р°РЅРґРµ 2/3', 'Р»РёРґРµСЂСѓ СЃРЅСЏС‚РёРµ Рё РґР¶Р°РёР»/РІР°СЂРЅ, Р±Р°РЅРґРµ 3/3'}, {'РЅРёС‡РµРіРѕ', 'Р»РёРґРµСЂСѓ СЃРЅСЏС‚РёРµ, РѕС‚ РјР°С„РёРё РїРѕ 2 Р±РёР·РЅРµСЃР° РІСЃРµРј РґСЂСѓРіРёРј РјР°С„РёСЏРј', 'РІС‹РіРѕРІРѕСЂ', 'СЃРЅСЏС‚РёРµ, РІР°СЂРЅ', 'РёРіСЂРѕРєСѓ РґР¶Р°РёР»/РІР°СЂРЅ, РјР°С„РёРё 1/3', 'Р»РёРґРµСЂСѓ РІС‹РіРѕРІРѕСЂ Рё РґР¶Р°РёР»/РІР°СЂРЅ, РјР°С„РёРё 1/3', 'Р»РёРґРµСЂСѓ СЃРЅСЏС‚РёРµ Рё РґР¶Р°РёР»/РІР°СЂРЅ, РјР°С„РёРё 1/3', 'Р»РёРґРµСЂСѓ СЃРЅСЏС‚РёРµ Рё РґР¶Р°РёР»/РІР°СЂРЅ, РјР°С„РёРё 3/3', 'РёРіСЂРѕРєСѓ РґР¶Р°РёР»/РІР°СЂРЅ, РјР°С„РёРё 1/3', 'РёРіСЂРѕРєСѓ РґР¶Р°РёР»/РІР°СЂРЅ, РјР°С„РёРё 1/3'}, {'РІС‹РіРѕРІРѕСЂ', 'СѓРґР°Р»РµРЅРёРµ Р°РєРєР°СѓРЅС‚Р°', 'РЅРёС‡РµРіРѕ', 'СЃРЅСЏС‚РёРµ Рё РґР¶Р°РёР»/РІР°СЂРЅ', '2 РІС‹РіРѕРІРѕСЂР°', 'РІС‹РіРѕРІРѕСЂ', 'Р°РґРјРёРЅРєР° 7-РіРѕ СѓСЂРѕРІРЅСЏ', 'СЃРЅСЏС‚РёРµ РІСЃРµС… Р»РёРґРµСЂРѕРє'}, {'СЃРЅСЏС‚РёРµ СЃ СЃР°РїРїРѕСЂС‚РєРё, РїСЂРё РїРѕРІС‚РѕСЂРЅРѕРј РЅР°СЂСѓС€РµРЅРёРё Р§РЎ РЅР° 5 РґРЅРµР№', 'РґР¶Р°РёР»/РІР°СЂРЅ, РІС‹РіРѕРІРѕСЂ', 'РІС‹РіРѕРІРѕСЂ', 'РІС‹РіРѕРІРѕСЂ', 'СЃРЅСЏС‚РёРµ, Р§РЎ РЅР° 5 РґРЅРµР№', 'СЃРЅСЏС‚РёРµ, Р§РЎ РЅР° 5 РґРЅРµР№'}}
 function main()
 	if not isSampLoaded() or not isSampfuncsLoaded() then return end
 	while not isSampAvailable() do wait(100) end
@@ -65,8 +66,8 @@ function main()
 		end
 	end
 	if not a then
-		sampAddChatMessage('AHelper: произошла непредвиденная ошибка. Код ошибки: {'..acolor1..'}215.', color3)
-		sampAddChatMessage('AHelper: напиши мне {'..acolor1..'}(vk.com/jo_lac){'..acolor3..'} об этой ошибке.', color3)
+		sampAddChatMessage('AHelper: РїСЂРѕРёР·РѕС€Р»Р° РЅРµРїСЂРµРґРІРёРґРµРЅРЅР°СЏ РѕС€РёР±РєР°. РљРѕРґ РѕС€РёР±РєРё: {'..acolor1..'}215.', color3)
+		sampAddChatMessage('AHelper: РЅР°РїРёС€Рё РјРЅРµ {'..acolor1..'}(vk.com/jo_lac){'..acolor3..'} РѕР± СЌС‚РѕР№ РѕС€РёР±РєРµ.', color3)
 		sampTextdrawSetString(93, '0')
 		sampTextdrawSetString(94, '215')
 		close()
@@ -74,6 +75,7 @@ function main()
 		sampTextdrawSetString(93, '1')
 		sampTextdrawSetString(94, '0')
 	end
+	autoupdate('https://raw.githubusercontent.com/Who-Who/AHelper-ATRP/main/currentver', 'AHelper: ')
 	initializeRender()
 	sampRegisterChatCommand('offahelper', close)
 	sampRegisterChatCommand('otbor', otbor)
@@ -229,12 +231,12 @@ function setotbor(param)
 	if #param ~= 0 then
 		if param:find('^%d') then
 			typ = tonumber(param:match('^(%d)'))
-			sampAddChatMessage('AHelper: установлен тип отбора: '..tostring(typ), color5)
+			sampAddChatMessage('AHelper: СѓСЃС‚Р°РЅРѕРІР»РµРЅ С‚РёРї РѕС‚Р±РѕСЂР°: '..tostring(typ), color5)
 		else
-			sampAddChatMessage('AHelper: используй "/setotbor [id]", подробнее о id в /ahelper >> Отбор.', color1)
+			sampAddChatMessage('AHelper: РёСЃРїРѕР»СЊР·СѓР№ "/setotbor [id]", РїРѕРґСЂРѕР±РЅРµРµ Рѕ id РІ /ahelper >> РћС‚Р±РѕСЂ.', color1)
 		end
 	else
-		sampAddChatMessage('AHelper: используй "/setotbor [id]", подробнее о id в /ahelper >> Отбор.', color1)
+		sampAddChatMessage('AHelper: РёСЃРїРѕР»СЊР·СѓР№ "/setotbor [id]", РїРѕРґСЂРѕР±РЅРµРµ Рѕ id РІ /ahelper >> РћС‚Р±РѕСЂ.', color1)
 	end
 end
 function otbor()
@@ -242,22 +244,22 @@ function otbor()
 		lua_thread.create(
 		function()
 			wait(const)
-			sampSendChat('/m Правила отбора:')
+			sampSendChat('/m РџСЂР°РІРёР»Р° РѕС‚Р±РѕСЂР°:')
 			wait(const)
-			sampSendChat('/m Все ответы должны быть отправлены мне в смс или в репорт.')
+			sampSendChat('/m Р’СЃРµ РѕС‚РІРµС‚С‹ РґРѕР»Р¶РЅС‹ Р±С‹С‚СЊ РѕС‚РїСЂР°РІР»РµРЅС‹ РјРЅРµ РІ СЃРјСЃ РёР»Рё РІ СЂРµРїРѕСЂС‚.')
 			wait(const)
-			sampSendChat('/m Первому в строе на ответ даётся 15 секунд, остальным - 10 секунд.')
+			sampSendChat('/m РџРµСЂРІРѕРјСѓ РІ СЃС‚СЂРѕРµ РЅР° РѕС‚РІРµС‚ РґР°С‘С‚СЃСЏ 15 СЃРµРєСѓРЅРґ, РѕСЃС‚Р°Р»СЊРЅС‹Рј - 10 СЃРµРєСѓРЅРґ.')
 			wait(const)
-			sampSendChat('/m Любой чат кроме смс мне и репорта - спавн. Перебежка с одного места в другое - спавн.')
+			sampSendChat('/m Р›СЋР±РѕР№ С‡Р°С‚ РєСЂРѕРјРµ СЃРјСЃ РјРЅРµ Рё СЂРµРїРѕСЂС‚Р° - СЃРїР°РІРЅ. РџРµСЂРµР±РµР¶РєР° СЃ РѕРґРЅРѕРіРѕ РјРµСЃС‚Р° РІ РґСЂСѓРіРѕРµ - СЃРїР°РІРЅ.')
 			wait(const)
-			sampSendChat('/m АФК более пяти секунд - спавн. Ответ вне очереди - спавн. Неверный ответ - спавн.')
+			sampSendChat('/m РђР¤Рљ Р±РѕР»РµРµ РїСЏС‚Рё СЃРµРєСѓРЅРґ - СЃРїР°РІРЅ. РћС‚РІРµС‚ РІРЅРµ РѕС‡РµСЂРµРґРё - СЃРїР°РІРЅ. РќРµРІРµСЂРЅС‹Р№ РѕС‚РІРµС‚ - СЃРїР°РІРЅ.')
 			wait(const*10)
 				while true do
 					wait(0)
 					if not sampIsChatInputActive() and not sampIsDialogActive() then
 						for i, v in ipairs(quest[typ]) do
-							sampAddChatMessage('AHelper: ответ - '..answer[typ][i], color3)
-							sampSendChat('/m Что '..v..'?')
+							sampAddChatMessage('AHelper: РѕС‚РІРµС‚ - '..answer[typ][i], color3)
+							sampSendChat('/m Р§С‚Рѕ '..v..'?')
 							wait(const)
 							waiter()
 							while true do
@@ -268,14 +270,14 @@ function otbor()
 							end
 						end
 						typ = 0
-						sampAddChatMessage('AHelper: вопросы закончились. Пиши сам, хахаха.', color3)
+						sampAddChatMessage('AHelper: РІРѕРїСЂРѕСЃС‹ Р·Р°РєРѕРЅС‡РёР»РёСЃСЊ. РџРёС€Рё СЃР°Рј, С…Р°С…Р°С…Р°.', color3)
 						break
 					end
 				end
 		end
 	)
 	else
-		sampAddChatMessage('AHelper: сначала настрой отбор: "/setotbor [id]", подробнее о id в /ahelper >> Отбор.', color1)
+		sampAddChatMessage('AHelper: СЃРЅР°С‡Р°Р»Р° РЅР°СЃС‚СЂРѕР№ РѕС‚Р±РѕСЂ: "/setotbor [id]", РїРѕРґСЂРѕР±РЅРµРµ Рѕ id РІ /ahelper >> РћС‚Р±РѕСЂ.', color1)
 	end
 end
 function waiter()
@@ -292,24 +294,24 @@ end
 function event.onShowDialog(dialogId, style, title, button1, button2, text)
 	if worked then
 		if title:find('^%w+_%w+') and dialogId == 1932 then
-			table.nick[num] = title
-			table.accnum[num] = text:match('^Номер аккаунта:%D+(%d+)')
-			table.today[num] = text:match('В игре сегодня:%D+(%d+)')
-			table.yesterday[num] = text:match('В игре вчера:%D+(%d+)')
+			table1.nick[num] = title
+			table1.accnum[num] = text:match('^РќРѕРјРµСЂ Р°РєРєР°СѓРЅС‚Р°:%D+(%d+)')
+			table1.today[num] = text:match('Р’ РёРіСЂРµ СЃРµРіРѕРґРЅСЏ:%D+(%d+)')
+			table1.yesterday[num] = text:match('Р’ РёРіСЂРµ РІС‡РµСЂР°:%D+(%d+)')
 			setVirtualKeyDown(vk.VK_ESCAPE, true)
 			worked = false
 		end
 	end
 end
 function helplist()
-	local dialogtext = 'Ник\t№ аккаунта\tОнлайн сегодня\tОнлайн вчера\tАФК сегодня\n'
-	for i = 1, #table.nick do
-		dialogtext = dialogtext..table.nick[i]..'\t'..table.accnum[i]..'\t'..table.today[i]..'\t'..table.yesterday[i]..'\n'
+	local dialogtext = 'РќРёРє\tв„– Р°РєРєР°СѓРЅС‚Р°\tРћРЅР»Р°Р№РЅ СЃРµРіРѕРґРЅСЏ\tРћРЅР»Р°Р№РЅ РІС‡РµСЂР°\tРђР¤Рљ СЃРµРіРѕРґРЅСЏ\n'
+	for i = 1, #table1.nick do
+		dialogtext = dialogtext..table1.nick[i]..'\t'..table1.accnum[i]..'\t'..table1.today[i]..'\t'..table1.yesterday[i]..'\n'
 	end
-	sampShowDialog(1000, 'offstats helper', dialogtext, 'Закрыть', '', 5)
+	sampShowDialog(1000, 'offstats helper', dialogtext, 'Р—Р°РєСЂС‹С‚СЊ', '', 5)
 end
 function helpcheck()
-	sampAddChatMessage('Список аккаунтов, что надо проверить:', color5)
+	sampAddChatMessage('РЎРїРёСЃРѕРє Р°РєРєР°СѓРЅС‚РѕРІ, С‡С‚Рѕ РЅР°РґРѕ РїСЂРѕРІРµСЂРёС‚СЊ:', color5)
 	for i, v in ipairs(nicks) do
 		sampAddChatMessage(v, color5)
 	end
@@ -317,7 +319,7 @@ end
 function helpdelall()
 	for i, v in ipairs(nicks) do
 		nicks[i] = nil
-		sampAddChatMessage('AHelper: все ники были удалены.', color5)
+		sampAddChatMessage('AHelper: РІСЃРµ РЅРёРєРё Р±С‹Р»Рё СѓРґР°Р»РµРЅС‹.', color5)
 	end
 end
 function helpdel(param)
@@ -327,24 +329,24 @@ function helpdel(param)
 			if param == v then
 				nicks[i] = nil
 				save2()
-				sampAddChatMessage('AHelper: ник '..param..' удалён.', color5)
+				sampAddChatMessage('AHelper: РЅРёРє '..param..' СѓРґР°Р»С‘РЅ.', color5)
 				a = true
 			end
 		end
 		if not a then
-			sampAddChatMessage('AHelper: такого ника уже нет, либо он не последний в списке.', color5)
+			sampAddChatMessage('AHelper: С‚Р°РєРѕРіРѕ РЅРёРєР° СѓР¶Рµ РЅРµС‚, Р»РёР±Рѕ РѕРЅ РЅРµ РїРѕСЃР»РµРґРЅРёР№ РІ СЃРїРёСЃРєРµ.', color5)
 		end
 	else
-		sampAddChatMessage('AHelper: используй "/delhelp [Nick_Name]"', color5)
+		sampAddChatMessage('AHelper: РёСЃРїРѕР»СЊР·СѓР№ "/delhelp [Nick_Name]"', color5)
 	end
 end
 function helpadd(param)
 	if param:find('^%w+_%w+') then
 		nicks[#nicks+1] = param
 		save2()
-		sampAddChatMessage('AHelper: ник '..param..' добавлен.', color5)
+		sampAddChatMessage('AHelper: РЅРёРє '..param..' РґРѕР±Р°РІР»РµРЅ.', color5)
 	else
-		sampAddChatMessage('AHelper: используй "/addhelp [Nick_Name]"', color5)
+		sampAddChatMessage('AHelper: РёСЃРїРѕР»СЊР·СѓР№ "/addhelp [Nick_Name]"', color5)
 	end
 end
 function helpwork()
@@ -361,7 +363,7 @@ function helpwork()
 			end
 			setVirtualKeyDown(vk.VK_ESCAPE, false)
 		end
-		local dialogtext = 'Ник\t№ Аккаунта\tОнлайн сегодня\tОнлайн вчера\tАФК сегодня\n'
+		local dialogtext = 'РќРёРє\tв„– РђРєРєР°СѓРЅС‚Р°\tРћРЅР»Р°Р№РЅ СЃРµРіРѕРґРЅСЏ\tРћРЅР»Р°Р№РЅ РІС‡РµСЂР°\tРђР¤Рљ СЃРµРіРѕРґРЅСЏ\n'
 		helplist()
 		save1()
 	end
@@ -369,32 +371,32 @@ function helpwork()
 end
 function report(nick, id, time, param)
 	if json.autorep[1] or json.autorep[3] or json.autorep[5] then
-		if typerep ~= 0 then
-			while true do
+		while true do
+			if typerep ~= 0 then
 				if os.time() >= time then
 					typerep = 0
+					sampAddChatMessage('AHelper: Р’СЂРµРјСЏ Р·Р°РєРѕРЅС‡РёР»РѕСЃСЊ, СЂРµРїРѕСЂС‚ РѕС‚РєР°Р·Р°РЅ Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё.', color5)
 					break
-					sampAddChatMessage('AHelper: Время закончилось, репорт отказан автоматически.', color5)
-				elseif not sampIsChatInputActive() and not sampIsDialogActive() then
-					if isKeyJustPressed(vk.VK_X) or isKeyDown(vk.VK_X) then
+				elseif isKeyJustPressed(vk.VK_X) or isKeyDown(vk.VK_X) then
+					if not sampIsChatInputActive() and not sampIsDialogActive() then
 						if typerep == 1 then
-							sampSendChat("/pm " ..id.. " Сейчас заспавню Вас, ожидайте.")
+							sampSendChat("/pm " ..id.. " РЎРµР№С‡Р°СЃ Р·Р°СЃРїР°РІРЅСЋ Р’Р°СЃ, РѕР¶РёРґР°Р№С‚Рµ.")
 							wait(1250)
 							sampSendChat("/sp " ..id)
 							wait(0)
-							sampAddChatMessage("AHelper: Выполнено.", color5)
+							sampAddChatMessage("AHelper: Р’С‹РїРѕР»РЅРµРЅРѕ.", color5)
 						elseif typerep == 2 then
-							sampSendChat("/pm "..id.." Сейчас выдам Вам транспорт, ожидайте.")
+							sampSendChat("/pm "..id.." РЎРµР№С‡Р°СЃ РІС‹РґР°Рј Р’Р°Рј С‚СЂР°РЅСЃРїРѕСЂС‚, РѕР¶РёРґР°Р№С‚Рµ.")
 							wait(1250)
 							sampSendChat("/veh "..id.." "..param.." 1 1")
 							wait(0)
-							sampAddChatMessage("AHelper: Выполнено.", color5)
+							sampAddChatMessage("AHelper: Р’С‹РїРѕР»РЅРµРЅРѕ.", color5)
 						elseif typerep == 3 then
-							sampSendChat("/pm "..id.." Сейчас телепортирую Вас, ожидайте.")
+							sampSendChat("/pm "..id.." РЎРµР№С‡Р°СЃ С‚РµР»РµРїРѕСЂС‚РёСЂСѓСЋ Р’Р°СЃ, РѕР¶РёРґР°Р№С‚Рµ.")
 							wait(1250)
 							sampSendChat("/gothere "..id.." "..param)
 							wait(0)
-							sampAddChatMessage("AHelper: Выполнено.", color5)
+							sampAddChatMessage("AHelper: Р’С‹РїРѕР»РЅРµРЅРѕ.", color5)
 						end
 						typerep = 0
 						sampTextdrawSetString(93, '1')
@@ -403,13 +405,15 @@ function report(nick, id, time, param)
 					end
 					if isKeyJustPressed(vk.VK_Z) or isKeyDown(vk.VK_Z) then
 						typerep = 0
-						sampAddChatMessage("AHelper: Репорт отказан.", color5)
+						sampAddChatMessage("AHelper: Р РµРїРѕСЂС‚ РѕС‚РєР°Р·Р°РЅ.", color5)
 						sampTextdrawSetString(93, '1')
 						sampTextdrawSetString(94, '0')
 						break
 					end
+					wait(0)
 				end
-				wait(0)
+			else
+				break
 			end
 		end
 	end
@@ -431,7 +435,7 @@ function fcwork()
 					worked = false
 					aa = 0
 					typ, goal = ''
-					sampAddChatMessage('Выполнено. Теперь ещё раз введи /fcset.', color5)
+					sampAddChatMessage('Р’С‹РїРѕР»РЅРµРЅРѕ. РўРµРїРµСЂСЊ РµС‰С‘ СЂР°Р· РІРІРµРґРё /fcset.', color5)
 					wait(500)
 					sampCloseCurrentDialogWithButton(0)
 				end
@@ -440,7 +444,7 @@ function fcwork()
 		end
 		)
 	else
-		sampAddChatMessage('Сначала введи /fcset.', color5)
+		sampAddChatMessage('РЎРЅР°С‡Р°Р»Р° РІРІРµРґРё /fcset.', color5)
 	end
 end
 function funcset(param)
@@ -448,21 +452,21 @@ function funcset(param)
 		if param:find('^.+ .+') then
 			typ, goal = param:match('^(.+) (.+)')
 			if tonumber(typ) > 0 and tonumber(typ) < 4 then
-				sampAddChatMessage('Пункт: '..typ..', количество: '..goal..'. Теперь вводи /up.', color5)
+				sampAddChatMessage('РџСѓРЅРєС‚: '..typ..', РєРѕР»РёС‡РµСЃС‚РІРѕ: '..goal..'. РўРµРїРµСЂСЊ РІРІРѕРґРё /up.', color5)
 				worked = true
 			else
-				sampAddChatMessage('Введи адекватный пункт. Минимум 1 и максимум 3.', color5)
+				sampAddChatMessage('Р’РІРµРґРё Р°РґРµРєРІР°С‚РЅС‹Р№ РїСѓРЅРєС‚. РњРёРЅРёРјСѓРј 1 Рё РјР°РєСЃРёРјСѓРј 3.', color5)
 			end
 		else
-			sampAddChatMessage('Использование: /fcset [пункт списка /fcoins > 2] [количество улучшений]', color5)
+			sampAddChatMessage('РСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ: /fcset [РїСѓРЅРєС‚ СЃРїРёСЃРєР° /fcoins > 2] [РєРѕР»РёС‡РµСЃС‚РІРѕ СѓР»СѓС‡С€РµРЅРёР№]', color5)
 		end
 	else
-		sampAddChatMessage('Использование: /fcset [пункт списка /fcoins > 2] [количество улучшений]', color5)
+		sampAddChatMessage('РСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ: /fcset [РїСѓРЅРєС‚ СЃРїРёСЃРєР° /fcoins > 2] [РєРѕР»РёС‡РµСЃС‚РІРѕ СѓР»СѓС‡С€РµРЅРёР№]', color5)
 	end
 end
 function smsfunc(revtext)
 	wait(1000)
-	local rid = revtext:match('^%](%d+)%[%w+_%w+ :ьлетиварптО | .+')
+	local rid = revtext:match('^%](%d+)%[%w+_%w+ :СЊР»РµС‚РёРІР°СЂРїС‚Рћ | .+')
 	sampSendChat('/sms '..rid:reverse()..' '..json.privet[math.random(1, #json.privet)])
 end
 function pipwork(param)
@@ -472,10 +476,10 @@ function pipwork(param)
 			pip = true
 			sampSendChat('/getip '..param)
 		else
-			sampAddChatMessage('AHelper: такого игрока нет на сервере.', color5)
+			sampAddChatMessage('AHelper: С‚Р°РєРѕРіРѕ РёРіСЂРѕРєР° РЅРµС‚ РЅР° СЃРµСЂРІРµСЂРµ.', color5)
 		end
 	else
-		sampAddChatMessage('AHelper: используй "/pip [id]"', color5)
+		sampAddChatMessage('AHelper: РёСЃРїРѕР»СЊР·СѓР№ "/pip [id]"', color5)
 	end
 end
 event.onApplyPlayerAnimation = function(playerId, animLib, animName, frameDelta, loop, lockX, lockY, freeze, time)	-- (c) Radiant_Smith
@@ -486,7 +490,7 @@ event.onApplyPlayerAnimation = function(playerId, animLib, animName, frameDelta,
 	end
 end
 function event.onServerMessage(color, text)
-	--[[A-AREP]]if text == '[Внимание] Уже 5 непроверенных жалоб!!! [/arep]' and afloodwork then
+	--[[A-AREP]]if text == '[Р’РЅРёРјР°РЅРёРµ] РЈР¶Рµ 5 РЅРµРїСЂРѕРІРµСЂРµРЅРЅС‹С… Р¶Р°Р»РѕР±!!! [/arep]' and afloodwork then
 		local _, idd = sampGetPlayerIdByCharHandle(PLAYER_PED)
 		local nick = sampGetPlayerNickname(idd)
 		if nick == 'Alexandr_Mansory' then
@@ -509,9 +513,9 @@ function event.onServerMessage(color, text)
 		)
 		end
 	end
-	--[[PIP]]if text:find('^Ник %[%w+_%w+%]  R%-IP %[%d+.%d+.%d+.%d+%]  IP %[%d+.%d+.%d+.%d+%]') then
+	--[[PIP]]if text:find('^РќРёРє %[%w+_%w+%]  R%-IP %[%d+.%d+.%d+.%d+%]  IP %[%d+.%d+.%d+.%d+%]') then
 		if pip then
-			local ip = text:match('^Ник %[%w+_%w+%]  R%-IP %[%d+.%d+.%d+.%d+%]  IP %[(%d+.%d+.%d+.%d+)%]')
+			local ip = text:match('^РќРёРє %[%w+_%w+%]  R%-IP %[%d+.%d+.%d+.%d+%]  IP %[(%d+.%d+.%d+.%d+)%]')
 			pip = false
 			lua_thread.create(
 				function ()
@@ -522,21 +526,21 @@ function event.onServerMessage(color, text)
 			return false
 		end
 	end
-	--[[FCUP]]if text == 'Вы успешно приобрели {FFCC00}видеокарту {3399FF}для майнинга' or text == 'Вы успешно приобрели {FFCC00}суперкомпьютер {3399FF}для майнинга' or text == 'Вы успешно приобрели {FFCC00}сервер {3399FF}для майнинга' then
+	--[[FCUP]]if text == 'Р’С‹ СѓСЃРїРµС€РЅРѕ РїСЂРёРѕР±СЂРµР»Рё {FFCC00}РІРёРґРµРѕРєР°СЂС‚Сѓ {3399FF}РґР»СЏ РјР°Р№РЅРёРЅРіР°' or text == 'Р’С‹ СѓСЃРїРµС€РЅРѕ РїСЂРёРѕР±СЂРµР»Рё {FFCC00}СЃСѓРїРµСЂРєРѕРјРїСЊСЋС‚РµСЂ {3399FF}РґР»СЏ РјР°Р№РЅРёРЅРіР°' or text == 'Р’С‹ СѓСЃРїРµС€РЅРѕ РїСЂРёРѕР±СЂРµР»Рё {FFCC00}СЃРµСЂРІРµСЂ {3399FF}РґР»СЏ РјР°Р№РЅРёРЅРіР°' then
 		return false
-	elseif text == 'У вас недостаточно F-Coins' then
+	elseif text == 'РЈ РІР°СЃ РЅРµРґРѕСЃС‚Р°С‚РѕС‡РЅРѕ F-Coins' then
 		worked = false
 		typ, goal = nil, nil
-		sampAddChatMessage('ФК закончились.', color5)
+		sampAddChatMessage('Р¤Рљ Р·Р°РєРѕРЅС‡РёР»РёСЃСЊ.', color5)
 		return false
 	end
 	--[[ANTIIZNAS]]if json.iznas then
 		local _, idd = sampGetPlayerIdByCharHandle(PLAYER_PED)
 		local nick = sampGetPlayerNickname(idd)
-		if text:match("^%w+_%w+ изнасиловал (%w+_%w+)") == nick then
+		if text:match("^%w+_%w+ РёР·РЅР°СЃРёР»РѕРІР°Р» (%w+_%w+)") == nick then
 			for i=0, 200 do
 				if sampIsPlayerConnected(i) then
-					if sampGetPlayerNickname(i) == text:match("^(%w+_%w+) изнасиловал %w+_%w+") then
+					if sampGetPlayerNickname(i) == text:match("^(%w+_%w+) РёР·РЅР°СЃРёР»РѕРІР°Р» %w+_%w+") then
 						izid = i
 						break
 					end
@@ -544,17 +548,17 @@ function event.onServerMessage(color, text)
 			end
 		end
 	end
-	--[[SMS]] if json.asms[1] then
+	--[[SMS]]if json.asms[1] then
 		local _, idd = sampGetPlayerIdByCharHandle(PLAYER_PED)
 		local nick = sampGetPlayerNickname(idd)
 		for i, v in ipairs(json.textsms) do
-			if text:find('^SMS:'..v..'.+%| Отправитель: %w+_%w+%[%d+%]') then
+			if text:find('^SMS:'..v..'.+%| РћС‚РїСЂР°РІРёС‚РµР»СЊ: %w+_%w+%[%d+%]') then
 				local notsms = false
-				for i, v in ipairs(json.nottextsms) do if text:find('^SMS:'..v..'.+%| Отправитель: %w+_%w+') or text:find('^SMS:.+'..v..' %| Отправитель: %w+_%w+') or text:find('^SMS:.+'..v..'.+%| Отправитель: %w+_%w+') then notsms = true break end end
+				for i, v in ipairs(json.nottextsms) do if text:find('^SMS:'..v..'.+%| РћС‚РїСЂР°РІРёС‚РµР»СЊ: %w+_%w+') or text:find('^SMS:.+'..v..' %| РћС‚РїСЂР°РІРёС‚РµР»СЊ: %w+_%w+') or text:find('^SMS:.+'..v..'.+%| РћС‚РїСЂР°РІРёС‚РµР»СЊ: %w+_%w+') then notsms = true break end end
 				if not notsms then
 					local revtext = text:reverse()
-					if revtext:find('^%]%d+%[%w+_%w+ :ьлетиварптО | .+') then
-						local revid = tostring(revtext:match('^%](%d+)%[%w+_%w+ :ьлетиварптО | .+'))
+					if revtext:find('^%]%d+%[%w+_%w+ :СЊР»РµС‚РёРІР°СЂРїС‚Рћ | .+') then
+						local revid = tostring(revtext:match('^%](%d+)%[%w+_%w+ :СЊР»РµС‚РёРІР°СЂРїС‚Рћ | .+'))
 						if revid:reverse() ~= idd then
 							lua_thread.create(smsfunc, revtext)
 						end
@@ -564,9 +568,9 @@ function event.onServerMessage(color, text)
 			end
 		end
 	end
-	--[[MUTE]] if json.amute then
-		if text:find('^%[Анти%-реклама%] %w+_%w+%[%d+%]: .*') then
-			local nnick, iid, mmessage = text:match('^%[Анти%-реклама%] (%w+_%w+)%[(%d+)%]: (.*)')
+	--[[MUTE]]if json.amute then
+		if text:find('^%[РђРЅС‚Рё%-СЂРµРєР»Р°РјР°%] %w+_%w+%[%d+%]: .*') then
+			local nnick, iid, mmessage = text:match('^%[РђРЅС‚Рё%-СЂРµРєР»Р°РјР°%] (%w+_%w+)%[(%d+)%]: (.*)')
 			for i, v in pairs(phares) do
 				if mmessage:find(v) then
 					local antimute = false
@@ -575,7 +579,7 @@ function event.onServerMessage(color, text)
 					end
 					if not antimute then
 						local time = os.time()+5
-						sampAddChatMessage('AHelper: выдать мут игроку '..nnick..'['..iid..'] за упоминание родных? Нажми M для подтверждения.', color4)
+						sampAddChatMessage('AHelper: РІС‹РґР°С‚СЊ РјСѓС‚ РёРіСЂРѕРєСѓ '..nnick..'['..iid..'] Р·Р° СѓРїРѕРјРёРЅР°РЅРёРµ СЂРѕРґРЅС‹С…? РќР°Р¶РјРё M РґР»СЏ РїРѕРґС‚РІРµСЂР¶РґРµРЅРёСЏ.', color4)
 						lua_thread.create(bind, iid, time)
 					end
 					break
@@ -583,94 +587,79 @@ function event.onServerMessage(color, text)
 			end
 		end
 	end
-	--[[REPORT]]if json.autorep[1] or json.autorep[3] or json.autorep[5] then
-		if text:find("^%w+_%w+%[%d+%] : {FFCD00}.+") then
+	--[[REPORT]]
+	if text:find("^%w+_%w+%[%d+%] : {FFCD00}.+") then
+		if json.autorep[1] or json.autorep[3] or json.autorep[5] then
 			atext = text:match("^%w+_%w+%[%d+%] : {FFCD00}(.+)")
 			local worked = false
-			if typerep ~= 0 then
-				if text:find('^Администратор %w+_%w+%[%d+%] для %w+_%w+%[%d+%]: .+') and json.autorep[7] then
-					local res, idd = sampGetPlayerIdByCharHandle(PLAYER_PED)
-					if text:match('^Администратор %w+_%w+%[%d+%] для %w+_%w+%[(%d+)%]: .+') == id and text:match('^Администратор %w+_%w+%[(%d+)%] для %w+_%w+%[%d+%]: .+') ~= tostring(idd) then
-						typerep = 0
-						sampAddChatMessage('AHelper: на репорт уже ответил другой администратор.', color1)
-						sampTextdrawSetString(94, '0')
-					end
-				elseif json.autorep[1] then
-					local ban = false
-					for i, v in ipairs(json.sptext) do
-						if atext:find(v) then
-							--for c, b in ipairs(json.notsptext) do if atext:find(b) then ban = true end end
-							if not ban then
-								nick, id = text:match("^(%w+_%w+)%[(%d+)%] : .+")
-								local timee = os.time() + 10
-								typerep = 1
-								sampAddChatMessage('AHelper: Ответить на репорт от {AAFF55} ' .. nick .. '{'..acolor1..'}[{AAFF55}' .. id .. '{'..acolor1..'}]?', color1)
-								sampAddChatMessage('Текст: {AAFF55}'..atext..'{'..acolor1..'}? {AAFF55} Нажми X.', color5)
-								lua_thread.create(report, nick, id, timee, '')
-								sampTextdrawSetString(93, '1')
-								sampTextdrawSetString(94, '1')
-								if json.autorep[2] then return false end
-							end
-							break
-						end
-					end
-				elseif atext:find('нрг') or atext:find('nrg') or atext:find('транспорт') or atext:find('машину') or atext:find('машина') or atext:find('car') or atext:find('НРГ') or atext:find('NRG') or atext:find('CAR') or atext:find('инфернус') or atext:find('infernus') or atext:find('элеги') or atext:find('elegy') or atext:find('султан') or atext:find('sultan') then
-					if json.autorep[3] and not worked then
-						if atext:find('нрг') or atext:find('nrg') or atext:find('транспорт') or atext:find('машину') or atext:find('машина') or atext:find('car') or atext:find('НРГ') or atext:find('NRG') or atext:find('CAR') or atext:find('инфернус') or atext:find('infernus') or atext:find('элеги') or atext:find('elegy') or atext:find('султан') or atext:find('sultan') then
+			if json.autorep[1] then
+				local ban = false
+				for i, v in ipairs(json.sptext) do
+					if atext:find(v) then
+						for c, b in ipairs(json.notsptext) do if atext:find(b) then ban = true end end
+						if not ban then
+							nick, id = text:match("^(%w+_%w+)%[(%d+)%] : .+")
+							local timee = os.time() + 10
+							typerep = 1
 							worked = true
-							if atext:find('нрг') or atext:find('nrg') or atext:find('транспорт') or atext:find('машину') or atext:find('машина') or atext:find('car') or atext:find('НРГ') or atext:find('NRG') or atext:find('CAR') then veh = '522' elseif atext:find('инфернус') or atext:find('infernus') then veh = '411' elseif atext:find('элеги') or atext:find('elegy') then veh = '562' elseif atext:find('султан') or atext:find('sultan') then veh = '560' end
-							nick, id = text:match("^(%w+_%w+)%[(%d+)%] : .+")
-							local timee = os.time() + 10
-							typerep = 2
-							sampAddChatMessage('AHelper: Ответить на репорт от {AAFF55} ' .. nick .. '{'..acolor1..'}[{AAFF55}' .. id .. '{'..acolor1..'}]?', color1)
-							sampAddChatMessage('Текст: {AAFF55}'..atext..'{'..acolor1..'}? {AAFF55} Нажми X.', color5)
-							lua_thread.create(report, nick, id, timee, veh)
-							sampTextdrawSetString(93, '1')
+							sampAddChatMessage('AHelper: РћС‚РІРµС‚РёС‚СЊ РЅР° СЂРµРїРѕСЂС‚ РѕС‚ {AAFF55} ' .. nick .. '{'..acolor1..'}[{AAFF55}' .. id .. '{'..acolor1..'}]?', color1)
+							sampAddChatMessage('РўРµРєСЃС‚: {AAFF55}'..atext..'{'..acolor1..'}? {AAFF55} РќР°Р¶РјРё X.', color5)
+							lua_thread.create(report, nick, id, timee, '')
 							sampTextdrawSetString(94, id)
-						elseif atext:find('%d+ кар') or atext:find('кар %d+') or atext:find('car %d+') or atext:find('%d+ car') or atext:find('машина %d+') or atext:find('%d+ машина') then
-							if atext:find('%d+ кар') then local veh = atext:match('(%d+) кар')
-							elseif atext:find('кар %d+') then local veh = atext:match('кар (%d+)')
-							elseif atext:find('%d+ car') then local veh = atext:match('(%d+) car')
-							elseif atext:find('car %d+') then local veh = atext:match('car (%d+)')
-							elseif atext:find('машина %d+') then local veh = atext:match('машина (%d+)')
-							elseif atext:find('машину %d+') then local veh = atext:match('машину (%d+)')
-							elseif atext:find('%d+ машин') then local veh = atext:match('(%d+) машин') end
+							if json.autorep[2] then return false end
+						end
+						break
+					end
+				end
+			end
+			if not worked then
+				if atext:find('РЅСЂРі') or atext:find('nrg') or atext:find('С‚СЂР°РЅСЃРїРѕСЂС‚') or atext:find('РјР°С€РёРЅСѓ') or atext:find('РјР°С€РёРЅР°') or atext:find('car') or atext:find('РќР Р“') or atext:find('NRG') or atext:find('CAR') or atext:find('РёРЅС„РµСЂРЅСѓСЃ') or atext:find('infernus') or atext:find('СЌР»РµРіРё') or atext:find('elegy') or atext:find('СЃСѓР»С‚Р°РЅ') or atext:find('sultan') then
+					if json.autorep[3] and not worked then
+						if atext:find('РЅСЂРі') or atext:find('nrg') or atext:find('С‚СЂР°РЅСЃРїРѕСЂС‚') or atext:find('РјР°С€РёРЅСѓ') or atext:find('РјР°С€РёРЅР°') or atext:find('car') or atext:find('РќР Р“') or atext:find('NRG') or atext:find('CAR') or atext:find('РёРЅС„РµСЂРЅСѓСЃ') or atext:find('infernus') or atext:find('СЌР»РµРіРё') or atext:find('elegy') or atext:find('СЃСѓР»С‚Р°РЅ') or atext:find('sultan') then
+							worked = true
+							if atext:find('РЅСЂРі') or atext:find('nrg') or atext:find('С‚СЂР°РЅСЃРїРѕСЂС‚') or atext:find('РјР°С€РёРЅСѓ') or atext:find('РјР°С€РёРЅР°') or atext:find('car') or atext:find('РќР Р“') or atext:find('NRG') or atext:find('CAR') then veh = '522' elseif atext:find('РёРЅС„РµСЂРЅСѓСЃ') or atext:find('infernus') then veh = '411' elseif atext:find('СЌР»РµРіРё') or atext:find('elegy') then veh = '562' elseif atext:find('СЃСѓР»С‚Р°РЅ') or atext:find('sultan') then veh = '560' end
 							nick, id = text:match("^(%w+_%w+)%[(%d+)%] : .+")
 							local timee = os.time() + 10
 							typerep = 2
-							sampAddChatMessage('AHelper: Ответить на репорт от {AAFF55} ' .. nick .. '{'..acolor1..'}[{AAFF55}' .. id .. '{'..acolor1..'}]?', color1)
-							sampAddChatMessage('Текст: {AAFF55}'..atext..'{'..acolor1..'}? {AAFF55} Нажми X.', color5)
+							sampAddChatMessage('AHelper: РћС‚РІРµС‚РёС‚СЊ РЅР° СЂРµРїРѕСЂС‚ РѕС‚ {AAFF55} ' .. nick .. '{'..acolor1..'}[{AAFF55}' .. id .. '{'..acolor1..'}]?', color1)
+							sampAddChatMessage('РўРµРєСЃС‚: {AAFF55}'..atext..'{'..acolor1..'}? {AAFF55} РќР°Р¶РјРё X.', color5)
 							lua_thread.create(report, nick, id, timee, veh)
-							sampTextdrawSetString(93, '1')
 							sampTextdrawSetString(94, id)
 						end
-						if json.autorep[4] then return false end
 					end
-				elseif atext:find('к %d+') and not worked then
+				elseif atext:find('%d+ РєР°СЂ') or atext:find('РєР°СЂ %d+') or atext:find('car %d+') or atext:find('%d+ car') or atext:find('РјР°С€РёРЅР° %d+') or atext:find('%d+ РјР°С€РёРЅР°') then
+					if atext:find('%d+ РєР°СЂ') then local veh = atext:match('(%d+) РєР°СЂ') elseif atext:find('РєР°СЂ %d+') then local veh = atext:match('РєР°СЂ (%d+)') elseif atext:find('%d+ car') then local veh = atext:match('(%d+) car') elseif atext:find('car %d+') then local veh = atext:match('car (%d+)') elseif atext:find('РјР°С€РёРЅР° %d+') then local veh = atext:match('РјР°С€РёРЅР° (%d+)') elseif atext:find('РјР°С€РёРЅСѓ %d+') then local veh = atext:match('РјР°С€РёРЅСѓ (%d+)') elseif atext:find('%d+ РјР°С€РёРЅ') then local veh = atext:match('(%d+) РјР°С€РёРЅ') end
+					nick, id = text:match("^(%w+_%w+)%[(%d+)%] : .+")
+					local timee = os.time() + 10
+					typerep = 2
+					sampAddChatMessage('AHelper: РћС‚РІРµС‚РёС‚СЊ РЅР° СЂРµРїРѕСЂС‚ РѕС‚ {AAFF55} ' .. nick .. '{'..acolor1..'}[{AAFF55}' .. id .. '{'..acolor1..'}]?', color1)
+					sampAddChatMessage('РўРµРєСЃС‚: {AAFF55}'..atext..'{'..acolor1..'}? {AAFF55} РќР°Р¶РјРё X.', color5)
+					lua_thread.create(report, nick, id, timee, veh)
+					sampTextdrawSetString(94, id)
+					if json.autorep[4] then return false end
+				elseif atext:find('Рє %d+') and not worked then
 					if json.autorep[5] then
 						worked = true
 						nick, id = text:match("^(%w+_%w+)%[(%d+)%] : .+")
-						local id2 = atext:match('к (%d+)')
+						local id2 = atext:match('Рє (%d+)')
 						local timee = os.time() + 10
 						typerep = 3
-						sampAddChatMessage('AHelper: Ответить на репорт от {AAFF55} ' .. nick .. '{'..acolor1..'}[{AAFF55}' .. id .. '{'..acolor1..'}]?', color1)
-						sampAddChatMessage('Текст: {AAFF55}'..atext..'{'..acolor1..'}? {AAFF55} Нажми X.', color5)
+						sampAddChatMessage('AHelper: РћС‚РІРµС‚РёС‚СЊ РЅР° СЂРµРїРѕСЂС‚ РѕС‚ {AAFF55} ' .. nick .. '{'..acolor1..'}[{AAFF55}' .. id .. '{'..acolor1..'}]?', color1)
+						sampAddChatMessage('РўРµРєСЃС‚: {AAFF55}'..atext..'{'..acolor1..'}? {AAFF55} РќР°Р¶РјРё X.', color5)
 						lua_thread.create(report, nick, id, timee, id2)
-						sampTextdrawSetString(93, '1')
 						sampTextdrawSetString(94, id)
 						if json.autorep[6] then return false end
 					end
-				elseif atext:find('к id %d+') and not worked then
+				elseif atext:find('Рє id %d+') and not worked then
 					if json.autorep[5] then
 						worked = true
 						nick, id = text:match("^(%w+_%w+)%[(%d+)%] : .+")
-						local id2 = atext:match('к id (%d+)')
+						local id2 = atext:match('Рє id (%d+)')
 						local timee = os.time() + 10
 						typerep = 3
-						sampAddChatMessage('AHelper: Ответить на репорт от {AAFF55} ' .. nick .. '{'..acolor1..'}[{AAFF55}' .. id .. '{'..acolor1..'}]?', color1)
-						sampAddChatMessage('Текст: {AAFF55}'..atext..'{'..acolor1..'}? {AAFF55} Нажми X.', color5)
+						sampAddChatMessage('AHelper: РћС‚РІРµС‚РёС‚СЊ РЅР° СЂРµРїРѕСЂС‚ РѕС‚ {AAFF55} ' .. nick .. '{'..acolor1..'}[{AAFF55}' .. id .. '{'..acolor1..'}]?', color1)
+						sampAddChatMessage('РўРµРєСЃС‚: {AAFF55}'..atext..'{'..acolor1..'}? {AAFF55} РќР°Р¶РјРё X.', color5)
 						lua_thread.create(report, nick, id, timee, id2)
-						sampTextdrawSetString(93, '1')
 						sampTextdrawSetString(94, id)
 						if json.autorep[6] then return false end
 					end
@@ -681,10 +670,9 @@ function event.onServerMessage(color, text)
 						local id2 = atext:match('k (%d+)')
 						local timee = os.time() + 10
 						typerep = 3
-						sampAddChatMessage('AHelper: Ответить на репорт от {AAFF55} ' .. nick .. '{'..acolor1..'}[{AAFF55}' .. id .. '{'..acolor1..'}]?', color1)
-						sampAddChatMessage('Текст: {AAFF55}'..atext..'{'..acolor1..'}? {AAFF55} Нажми X.', color5)
+						sampAddChatMessage('AHelper: РћС‚РІРµС‚РёС‚СЊ РЅР° СЂРµРїРѕСЂС‚ РѕС‚ {AAFF55} ' .. nick .. '{'..acolor1..'}[{AAFF55}' .. id .. '{'..acolor1..'}]?', color1)
+						sampAddChatMessage('РўРµРєСЃС‚: {AAFF55}'..atext..'{'..acolor1..'}? {AAFF55} РќР°Р¶РјРё X.', color5)
 						lua_thread.create(report, nick, id, timee, id2)
-						sampTextdrawSetString(93, '1')
 						sampTextdrawSetString(94, id)
 						if json.autorep[6] then return false end
 					end
@@ -695,24 +683,22 @@ function event.onServerMessage(color, text)
 						local id2 = atext:match('k id (%d+)')
 						local timee = os.time() + 10
 						typerep = 3
-						sampAddChatMessage('AHelper: Ответить на репорт от {AAFF55} ' .. nick .. '{'..acolor1..'}[{AAFF55}' .. id .. '{'..acolor1..'}]?', color1)
-						sampAddChatMessage('Текст: {AAFF55}'..atext..'{'..acolor1..'}? {AAFF55} Нажми X.', color5)
+						sampAddChatMessage('AHelper: РћС‚РІРµС‚РёС‚СЊ РЅР° СЂРµРїРѕСЂС‚ РѕС‚ {AAFF55} ' .. nick .. '{'..acolor1..'}[{AAFF55}' .. id .. '{'..acolor1..'}]?', color1)
+						sampAddChatMessage('РўРµРєСЃС‚: {AAFF55}'..atext..'{'..acolor1..'}? {AAFF55} РќР°Р¶РјРё X.', color5)
 						lua_thread.create(report, nick, id, timee, id2)
-						sampTextdrawSetString(93, '1')
 						sampTextdrawSetString(94, id)
 						if json.autorep[6] then return false end
 					end
-				elseif atext:find('к ид %d+') and not worked then
+				elseif atext:find('Рє РёРґ %d+') and not worked then
 					if json.autorep[5] then
 						worked = true
 						nick, id = text:match("^(%w+_%w+)%[(%d+)%] : .+")
-						local id2 = atext:match('к ид (%d+)')
+						local id2 = atext:match('Рє РёРґ (%d+)')
 						local timee = os.time() + 10
 						typerep = 3
-						sampAddChatMessage('AHelper: Ответить на репорт от {AAFF55} ' .. nick .. '{'..acolor1..'}[{AAFF55}' .. id .. '{'..acolor1..'}]?', color1)
-						sampAddChatMessage('Текст: {AAFF55}'..atext..'{'..acolor1..'}? {AAFF55} Нажми X.', color5)
+						sampAddChatMessage('AHelper: РћС‚РІРµС‚РёС‚СЊ РЅР° СЂРµРїРѕСЂС‚ РѕС‚ {AAFF55} ' .. nick .. '{'..acolor1..'}[{AAFF55}' .. id .. '{'..acolor1..'}]?', color1)
+						sampAddChatMessage('РўРµРєСЃС‚: {AAFF55}'..atext..'{'..acolor1..'}? {AAFF55} РќР°Р¶РјРё X.', color5)
 						lua_thread.create(report, nick, id, timee, id2)
-						sampTextdrawSetString(93, '1')
 						sampTextdrawSetString(94, id)
 						if json.autorep[6] then return false end
 					end
@@ -726,27 +712,38 @@ function event.onServerMessage(color, text)
 						if id3 == idd then
 							timee = os.time() + 10
 							typerep = 3
-							sampAddChatMessage('AHelper: Ответить на репорт от {AAFF55} ' .. nick .. '{'..acolor1..'}[{AAFF55}' .. id .. '{'..acolor1..'}]?', color1)
-							sampAddChatMessage('Текст: {AAFF55}'..atext..'{'..acolor1..'}? {AAFF55} Нажми X.', color5)
+							sampAddChatMessage('AHelper: РћС‚РІРµС‚РёС‚СЊ РЅР° СЂРµРїРѕСЂС‚ РѕС‚ {AAFF55} ' .. nick .. '{'..acolor1..'}[{AAFF55}' .. id .. '{'..acolor1..'}]?', color1)
+							sampAddChatMessage('РўРµРєСЃС‚: {AAFF55}'..atext..'{'..acolor1..'}? {AAFF55} РќР°Р¶РјРё X.', color5)
 							lua_thread.create(report, nick, id, timee, id2)
-							sampTextdrawSetString(93, '1')
 							sampTextdrawSetString(94, id)
 							if json.autorep[6] then return false end
 						end
 					end
 				end
 			end
+		elseif typerep ~= 0 then typerep = 0 end
+	end
+	if text:find('^РђРґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂ %w+_%w+%[%d+%] РґР»СЏ %w+_%w+%[%d+%]: .+') then
+		if typerep ~= 0 then
+			if json.autorep[7] then
+				local res, idd = sampGetPlayerIdByCharHandle(PLAYER_PED)
+				if text:match('^РђРґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂ %w+_%w+%[%d+%] РґР»СЏ %w+_%w+%[(%d+)%]: .+') == id and text:match('^РђРґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂ %w+_%w+%[(%d+)%] РґР»СЏ %w+_%w+%[%d+%]: .+') ~= tostring(idd) then
+					typerep = 0
+					sampAddChatMessage('AHelper: РЅР° СЂРµРїРѕСЂС‚ СѓР¶Рµ РѕС‚РІРµС‚РёР» РґСЂСѓРіРѕР№ Р°РґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂ.', color1)
+					sampTextdrawSetString(94, '0')
+				end
+			end
 		end
-	elseif typerep ~= 0 then typerep = 0 end
+	end
 	--[[SPAM]]if json.spam then
 		-- info:
-		if text == 'ВНИМАНИЕ! Не принимайте никаких файлов или же читов по дискорду или вк чтобы не взломали аккаунт' then return false elseif text == 'Купить игровую валютую, коины, золотые монеты и многое другое через сайт: {33cc00}attractive-rp.ru/#donat' then return false elseif text == 'Attractive RP | {FF9A30}Информация о сервере / основателе: {fb6400}/info' then return false elseif text == 'Attractive RP | {FF9A30}Вы можете приобрести административные права по акции всего за 25 рублей {fb6400}/info' then return false elseif text == 'Attractive RP | {FF9A30}Проводится мега конкурс на 3 призовых места. Подробнее: {fb6400}vk.com/attractive_samp' then return false elseif text == 'На сервере действует акция {00CC00}«х4 донат»{FFFFFF}. Пополнить счет можно на сайте: {00CC00}attractive-rp.ru' then return false elseif text == 'Attractive RP | {FF9A30}Если вы не добавили наш сервер в избранное, то сделайте это {fb6400}IP: 176.32.36.95:7777' then return false elseif text == 'Attractive RP | {FF9A30}На сервере присутствуют коины, добывая и улучшая которые, можно получить рубли {fb6400}/fcoins' then return false elseif text == '[Изменение курса]' then return false elseif text:find('^Курс обмена на данный момент составляет {99CC00}%(%d+.%d+ F-Coins%)') then return false elseif text == 'Attractive RP | {FF9A30}Приобрести админку по акции {fb6400}«х4 донат» {FF9A30}можно всего за 25 рублей {fb6400}/info' then return false
+		if text == 'Р’РќРРњРђРќРР•! РќРµ РїСЂРёРЅРёРјР°Р№С‚Рµ РЅРёРєР°РєРёС… С„Р°Р№Р»РѕРІ РёР»Рё Р¶Рµ С‡РёС‚РѕРІ РїРѕ РґРёСЃРєРѕСЂРґСѓ РёР»Рё РІРє С‡С‚РѕР±С‹ РЅРµ РІР·Р»РѕРјР°Р»Рё Р°РєРєР°СѓРЅС‚' then return false elseif text == 'РљСѓРїРёС‚СЊ РёРіСЂРѕРІСѓСЋ РІР°Р»СЋС‚СѓСЋ, РєРѕРёРЅС‹, Р·РѕР»РѕС‚С‹Рµ РјРѕРЅРµС‚С‹ Рё РјРЅРѕРіРѕРµ РґСЂСѓРіРѕРµ С‡РµСЂРµР· СЃР°Р№С‚: {33cc00}attractive-rp.ru/#donat' then return false elseif text == 'Attractive RP | {FF9A30}РРЅС„РѕСЂРјР°С†РёСЏ Рѕ СЃРµСЂРІРµСЂРµ / РѕСЃРЅРѕРІР°С‚РµР»Рµ: {fb6400}/info' then return false elseif text == 'Attractive RP | {FF9A30}Р’С‹ РјРѕР¶РµС‚Рµ РїСЂРёРѕР±СЂРµСЃС‚Рё Р°РґРјРёРЅРёСЃС‚СЂР°С‚РёРІРЅС‹Рµ РїСЂР°РІР° РїРѕ Р°РєС†РёРё РІСЃРµРіРѕ Р·Р° 25 СЂСѓР±Р»РµР№ {fb6400}/info' then return false elseif text == 'Attractive RP | {FF9A30}РџСЂРѕРІРѕРґРёС‚СЃСЏ РјРµРіР° РєРѕРЅРєСѓСЂСЃ РЅР° 3 РїСЂРёР·РѕРІС‹С… РјРµСЃС‚Р°. РџРѕРґСЂРѕР±РЅРµРµ: {fb6400}vk.com/attractive_samp' then return false elseif text == 'РќР° СЃРµСЂРІРµСЂРµ РґРµР№СЃС‚РІСѓРµС‚ Р°РєС†РёСЏ {00CC00}В«С…4 РґРѕРЅР°С‚В»{FFFFFF}. РџРѕРїРѕР»РЅРёС‚СЊ СЃС‡РµС‚ РјРѕР¶РЅРѕ РЅР° СЃР°Р№С‚Рµ: {00CC00}attractive-rp.ru' then return false elseif text == 'Attractive RP | {FF9A30}Р•СЃР»Рё РІС‹ РЅРµ РґРѕР±Р°РІРёР»Рё РЅР°С€ СЃРµСЂРІРµСЂ РІ РёР·Р±СЂР°РЅРЅРѕРµ, С‚Рѕ СЃРґРµР»Р°Р№С‚Рµ СЌС‚Рѕ {fb6400}IP: 176.32.36.95:7777' then return false elseif text == 'Attractive RP | {FF9A30}РќР° СЃРµСЂРІРµСЂРµ РїСЂРёСЃСѓС‚СЃС‚РІСѓСЋС‚ РєРѕРёРЅС‹, РґРѕР±С‹РІР°СЏ Рё СѓР»СѓС‡С€Р°СЏ РєРѕС‚РѕСЂС‹Рµ, РјРѕР¶РЅРѕ РїРѕР»СѓС‡РёС‚СЊ СЂСѓР±Р»Рё {fb6400}/fcoins' then return false elseif text == '[РР·РјРµРЅРµРЅРёРµ РєСѓСЂСЃР°]' then return false elseif text:find('^РљСѓСЂСЃ РѕР±РјРµРЅР° РЅР° РґР°РЅРЅС‹Р№ РјРѕРјРµРЅС‚ СЃРѕСЃС‚Р°РІР»СЏРµС‚ {99CC00}%(%d+.%d+ F-Coins%)') then return false elseif text == 'Attractive RP | {FF9A30}РџСЂРёРѕР±СЂРµСЃС‚Рё Р°РґРјРёРЅРєСѓ РїРѕ Р°РєС†РёРё {fb6400}В«С…4 РґРѕРЅР°С‚В» {FF9A30}РјРѕР¶РЅРѕ РІСЃРµРіРѕ Р·Р° 25 СЂСѓР±Р»РµР№ {fb6400}/info' then return false
 		-- san news:
-		elseif text == '  Объявление проверено редакцией SAN News' then return false elseif text == 'SAN | Новые аксессуары на центральном рынке у Даниэля. GPS 1 - 6 | Отправил SAN News (тел. 11888)' then return false elseif text == 'SAN | Продавайте предметы за золотые монеты, на Центральном Рынке! GPS 1 - 6 | Отправил SAN News (тел. 11888)' then return false elseif text == 'SAN | Устанавливайте Performance Tuning на свой транспорт. GPS 1 - 8 | Отправил SAN News (тел. 11888)' then return false elseif text == 'SAN | Открыт авторынок! Для поиска воспользуйтесь навигатором! GPS 1 - 9 | Отправил SAN News (тел. 11888)' then return false elseif text == 'SAN | Мастерская аксессуаров поможет в изготовлении уникальных вещей! GPS 1 - 10 | Отправил SAN News (тел. 11888)' then return false elseif text == 'SAN | Играйте в казино на цветную руду! GPS 4 - 4 - 7 | Отправил SAN News (тел. 11888)' then return false elseif text == 'SAN | Украсьте себя и свою жизнь, неон и цветное оружие в продаже! GPS 3 - 5 | Отправил SAN News (тел. 11888)' then return false elseif text == 'SAN | Хочешь выделиться? Новые аксессуары уже в продаже у Джейсона! GPS 3 - 5 | Отправил SAN News (тел. 11888)' then return false elseif text == 'SAN | Заработай на мечту, работая на шахте! GPS 5 - 5 | Отправил SAN News (тел. 11888)' then return false elseif text == 'SAN | San News ждёт Ваших объявлений! | Отправил SAN News (тел. 11888)' then return false elseif text == 'SAN | Хотите вступить в организацию? Посмотрите список ваканский (( /vacancy )) | Отправил SAN News (тел. 11888)' then return false elseif text == 'SAN | Хотите вступить в организацию? Посмотрите список вакансий (( /vacancy )) | Отправил SAN News (тел. 11888)' then return false elseif text:find('^SAN | Семья ".+" ищет новых людей! Ждём на маяке | Отправил %w+_%w+%[%d+%] %(тел. %d+%)') then return false elseif text:find('^SAN | {80FF00}В 15:50 пройдёт набор в "%w+". Ждём на На территорию {FFCD00}| Отправил %w+_%w+%[%d+%] %(тел. %d+%)') then return false
+		elseif text == '  РћР±СЉСЏРІР»РµРЅРёРµ РїСЂРѕРІРµСЂРµРЅРѕ СЂРµРґР°РєС†РёРµР№ SAN News' then return false elseif text == 'SAN | РќРѕРІС‹Рµ Р°РєСЃРµСЃСЃСѓР°СЂС‹ РЅР° С†РµРЅС‚СЂР°Р»СЊРЅРѕРј СЂС‹РЅРєРµ Сѓ Р”Р°РЅРёСЌР»СЏ. GPS 1 - 6 | РћС‚РїСЂР°РІРёР» SAN News (С‚РµР». 11888)' then return false elseif text == 'SAN | РџСЂРѕРґР°РІР°Р№С‚Рµ РїСЂРµРґРјРµС‚С‹ Р·Р° Р·РѕР»РѕС‚С‹Рµ РјРѕРЅРµС‚С‹, РЅР° Р¦РµРЅС‚СЂР°Р»СЊРЅРѕРј Р С‹РЅРєРµ! GPS 1 - 6 | РћС‚РїСЂР°РІРёР» SAN News (С‚РµР». 11888)' then return false elseif text == 'SAN | РЈСЃС‚Р°РЅР°РІР»РёРІР°Р№С‚Рµ Performance Tuning РЅР° СЃРІРѕР№ С‚СЂР°РЅСЃРїРѕСЂС‚. GPS 1 - 8 | РћС‚РїСЂР°РІРёР» SAN News (С‚РµР». 11888)' then return false elseif text == 'SAN | РћС‚РєСЂС‹С‚ Р°РІС‚РѕСЂС‹РЅРѕРє! Р”Р»СЏ РїРѕРёСЃРєР° РІРѕСЃРїРѕР»СЊР·СѓР№С‚РµСЃСЊ РЅР°РІРёРіР°С‚РѕСЂРѕРј! GPS 1 - 9 | РћС‚РїСЂР°РІРёР» SAN News (С‚РµР». 11888)' then return false elseif text == 'SAN | РњР°СЃС‚РµСЂСЃРєР°СЏ Р°РєСЃРµСЃСЃСѓР°СЂРѕРІ РїРѕРјРѕР¶РµС‚ РІ РёР·РіРѕС‚РѕРІР»РµРЅРёРё СѓРЅРёРєР°Р»СЊРЅС‹С… РІРµС‰РµР№! GPS 1 - 10 | РћС‚РїСЂР°РІРёР» SAN News (С‚РµР». 11888)' then return false elseif text == 'SAN | РРіСЂР°Р№С‚Рµ РІ РєР°Р·РёРЅРѕ РЅР° С†РІРµС‚РЅСѓСЋ СЂСѓРґСѓ! GPS 4 - 4 - 7 | РћС‚РїСЂР°РІРёР» SAN News (С‚РµР». 11888)' then return false elseif text == 'SAN | РЈРєСЂР°СЃСЊС‚Рµ СЃРµР±СЏ Рё СЃРІРѕСЋ Р¶РёР·РЅСЊ, РЅРµРѕРЅ Рё С†РІРµС‚РЅРѕРµ РѕСЂСѓР¶РёРµ РІ РїСЂРѕРґР°Р¶Рµ! GPS 3 - 5 | РћС‚РїСЂР°РІРёР» SAN News (С‚РµР». 11888)' then return false elseif text == 'SAN | РҐРѕС‡РµС€СЊ РІС‹РґРµР»РёС‚СЊСЃСЏ? РќРѕРІС‹Рµ Р°РєСЃРµСЃСЃСѓР°СЂС‹ СѓР¶Рµ РІ РїСЂРѕРґР°Р¶Рµ Сѓ Р”Р¶РµР№СЃРѕРЅР°! GPS 3 - 5 | РћС‚РїСЂР°РІРёР» SAN News (С‚РµР». 11888)' then return false elseif text == 'SAN | Р—Р°СЂР°Р±РѕС‚Р°Р№ РЅР° РјРµС‡С‚Сѓ, СЂР°Р±РѕС‚Р°СЏ РЅР° С€Р°С…С‚Рµ! GPS 5 - 5 | РћС‚РїСЂР°РІРёР» SAN News (С‚РµР». 11888)' then return false elseif text == 'SAN | San News Р¶РґС‘С‚ Р’Р°С€РёС… РѕР±СЉСЏРІР»РµРЅРёР№! | РћС‚РїСЂР°РІРёР» SAN News (С‚РµР». 11888)' then return false elseif text == 'SAN | РҐРѕС‚РёС‚Рµ РІСЃС‚СѓРїРёС‚СЊ РІ РѕСЂРіР°РЅРёР·Р°С†РёСЋ? РџРѕСЃРјРѕС‚СЂРёС‚Рµ СЃРїРёСЃРѕРє РІР°РєР°РЅСЃРєРёР№ (( /vacancy )) | РћС‚РїСЂР°РІРёР» SAN News (С‚РµР». 11888)' then return false elseif text == 'SAN | РҐРѕС‚РёС‚Рµ РІСЃС‚СѓРїРёС‚СЊ РІ РѕСЂРіР°РЅРёР·Р°С†РёСЋ? РџРѕСЃРјРѕС‚СЂРёС‚Рµ СЃРїРёСЃРѕРє РІР°РєР°РЅСЃРёР№ (( /vacancy )) | РћС‚РїСЂР°РІРёР» SAN News (С‚РµР». 11888)' then return false elseif text:find('^SAN | РЎРµРјСЊСЏ ".+" РёС‰РµС‚ РЅРѕРІС‹С… Р»СЋРґРµР№! Р–РґС‘Рј РЅР° РјР°СЏРєРµ | РћС‚РїСЂР°РІРёР» %w+_%w+%[%d+%] %(С‚РµР». %d+%)') then return false elseif text:find('^SAN | {80FF00}Р’ 15:50 РїСЂРѕР№РґС‘С‚ РЅР°Р±РѕСЂ РІ "%w+". Р–РґС‘Рј РЅР° РќР° С‚РµСЂСЂРёС‚РѕСЂРёСЋ {FFCD00}| РћС‚РїСЂР°РІРёР» %w+_%w+%[%d+%] %(С‚РµР». %d+%)') then return false
 		-- ace will:
-		elseif text == 'Администратор Ace_Will: Уважаемые игроки. Напоминаем о том, что сегодня пройдёт раздача рублей для всех.' then return false elseif text == 'Администратор Ace_Will: Абсолютно все желающие, без исключений, смогут принять участие в данной раздаче.' then return false elseif text == 'Администратор Ace_Will: Раздачи донат рублей проходят каждый день в 17:00 по московскому времени.' then return false elseif text == 'Администратор Ace_Will: Доступны ежедневные квесты для полицейских. Для выполнения найдите полковника в участке!' then return false elseif text == 'Администратор Ace_Will: Для Вас создана беседа, где можно общаться друг с другом вне сервера: clck.ru/dWiFs' then return false end
+		elseif text == 'РђРґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂ Ace_Will: РЈРІР°Р¶Р°РµРјС‹Рµ РёРіСЂРѕРєРё. РќР°РїРѕРјРёРЅР°РµРј Рѕ С‚РѕРј, С‡С‚Рѕ СЃРµРіРѕРґРЅСЏ РїСЂРѕР№РґС‘С‚ СЂР°Р·РґР°С‡Р° СЂСѓР±Р»РµР№ РґР»СЏ РІСЃРµС….' then return false elseif text == 'РђРґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂ Ace_Will: РђР±СЃРѕР»СЋС‚РЅРѕ РІСЃРµ Р¶РµР»Р°СЋС‰РёРµ, Р±РµР· РёСЃРєР»СЋС‡РµРЅРёР№, СЃРјРѕРіСѓС‚ РїСЂРёРЅСЏС‚СЊ СѓС‡Р°СЃС‚РёРµ РІ РґР°РЅРЅРѕР№ СЂР°Р·РґР°С‡Рµ.' then return false elseif text == 'РђРґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂ Ace_Will: Р Р°Р·РґР°С‡Рё РґРѕРЅР°С‚ СЂСѓР±Р»РµР№ РїСЂРѕС…РѕРґСЏС‚ РєР°Р¶РґС‹Р№ РґРµРЅСЊ РІ 17:00 РїРѕ РјРѕСЃРєРѕРІСЃРєРѕРјСѓ РІСЂРµРјРµРЅРё.' then return false elseif text == 'РђРґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂ Ace_Will: Р”РѕСЃС‚СѓРїРЅС‹ РµР¶РµРґРЅРµРІРЅС‹Рµ РєРІРµСЃС‚С‹ РґР»СЏ РїРѕР»РёС†РµР№СЃРєРёС…. Р”Р»СЏ РІС‹РїРѕР»РЅРµРЅРёСЏ РЅР°Р№РґРёС‚Рµ РїРѕР»РєРѕРІРЅРёРєР° РІ СѓС‡Р°СЃС‚РєРµ!' then return false elseif text == 'РђРґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂ Ace_Will: Р”Р»СЏ Р’Р°СЃ СЃРѕР·РґР°РЅР° Р±РµСЃРµРґР°, РіРґРµ РјРѕР¶РЅРѕ РѕР±С‰Р°С‚СЊСЃСЏ РґСЂСѓРі СЃ РґСЂСѓРіРѕРј РІРЅРµ СЃРµСЂРІРµСЂР°: clck.ru/dWiFs' then return false end
 	end
-	if text:find("^Вы прокрутили бронзовую рулетку | Осталось %d+ шт.") then sampSendClickTextdraw(id1) return false elseif text:find("^Вы прокрутили серебряную рулетку | Осталось %d+ шт.") then sampSendClickTextdraw(id2) return false elseif text:find("^Вы прокрутили золотую рулетку | Осталось %d+ шт.") then sampSendClickTextdraw(id3) return false end
+	if text:find("^Р’С‹ РїСЂРѕРєСЂСѓС‚РёР»Рё Р±СЂРѕРЅР·РѕРІСѓСЋ СЂСѓР»РµС‚РєСѓ | РћСЃС‚Р°Р»РѕСЃСЊ %d+ С€С‚.") then sampSendClickTextdraw(id1) return false elseif text:find("^Р’С‹ РїСЂРѕРєСЂСѓС‚РёР»Рё СЃРµСЂРµР±СЂСЏРЅСѓСЋ СЂСѓР»РµС‚РєСѓ | РћСЃС‚Р°Р»РѕСЃСЊ %d+ С€С‚.") then sampSendClickTextdraw(id2) return false elseif text:find("^Р’С‹ РїСЂРѕРєСЂСѓС‚РёР»Рё Р·РѕР»РѕС‚СѓСЋ СЂСѓР»РµС‚РєСѓ | РћСЃС‚Р°Р»РѕСЃСЊ %d+ С€С‚.") then sampSendClickTextdraw(id3) return false end
 end
 function event.onTogglePlayerControllable(controllable)
 	if not controllable then return false end
@@ -757,17 +754,17 @@ end
 function work()
 	json.autorep[1] = not json.autorep[1]
 	if json.autorep[1] then
-		sampAddChatMessage('AHelper: Быстрый ответ на репорт сейчас включен.', color1)
+		sampAddChatMessage('AHelper: Р‘С‹СЃС‚СЂС‹Р№ РѕС‚РІРµС‚ РЅР° СЂРµРїРѕСЂС‚ СЃРµР№С‡Р°СЃ РІРєР»СЋС‡РµРЅ.', color1)
 	elseif json.autorep[1] == false then
-		sampAddChatMessage('AHelper: Быстрый ответ на репорт сейчас выключен.', color1)
+		sampAddChatMessage('AHelper: Р‘С‹СЃС‚СЂС‹Р№ РѕС‚РІРµС‚ РЅР° СЂРµРїРѕСЂС‚ СЃРµР№С‡Р°СЃ РІС‹РєР»СЋС‡РµРЅ.', color1)
 	end
 end
 function work2()
 	json.autorep[2] = not json.autorep[2]
 	if json.autorep[2] then
-		sampAddChatMessage('AHelper: Удаление сообщения репорта включено.', color1)
+		sampAddChatMessage('AHelper: РЈРґР°Р»РµРЅРёРµ СЃРѕРѕР±С‰РµРЅРёСЏ СЂРµРїРѕСЂС‚Р° РІРєР»СЋС‡РµРЅРѕ.', color1)
 	elseif json.autorep[2] == false then
-		sampAddChatMessage('AHelper: Удаление сообщения репорта выключено.', color1)
+		sampAddChatMessage('AHelper: РЈРґР°Р»РµРЅРёРµ СЃРѕРѕР±С‰РµРЅРёСЏ СЂРµРїРѕСЂС‚Р° РІС‹РєР»СЋС‡РµРЅРѕ.', color1)
 	end
 end
 function rec(param)
@@ -779,7 +776,7 @@ function rec(param)
 			sampConnectToServer(ip, port)
 		end)
 	else
-		if tonumber(param) == nil then sampAddChatMessage('[Ошибка]: {ff9900}укажите время в секундах!', 0xFF0000)
+		if tonumber(param) == nil then sampAddChatMessage('[РћС€РёР±РєР°]: {ff9900}СѓРєР°Р¶РёС‚Рµ РІСЂРµРјСЏ РІ СЃРµРєСѓРЅРґР°С…!', 0xFF0000)
 		else
 			local sec = tonumber(param)
 			lua_thread.create(function()
@@ -793,7 +790,7 @@ function rec(param)
 end
 function recnick(param)
 	if #param == 0 then
-		sampAddChatMessage('[Ошибка]: {ff9900}укажите ник для переподключения!', 0xFF0000)
+		sampAddChatMessage('[РћС€РёР±РєР°]: {ff9900}СѓРєР°Р¶РёС‚Рµ РЅРёРє РґР»СЏ РїРµСЂРµРїРѕРґРєР»СЋС‡РµРЅРёСЏ!', 0xFF0000)
 	else
 		lua_thread.create(function()
 			local ip, port = sampGetCurrentServerAddress()
@@ -808,29 +805,29 @@ function info()
 	if json.spam then
 		if json.chat then
 			if json.asms[1] then
-				sampShowDialog(669, 'AHelper by jo_lac', '{'..acolor3..'}/ahelper\t{'..acolor4..'}Базовая команда\n{'..acolor4..'}/msgk\n{'..acolor2..'}/msg1\n{'..acolor2..'}/msg2\n{'..acolor2..'}/msg3\n{'..acolor2..'}/msg4\n{'..acolor2..'}/msg5\n{'..acolor2..'}/cmd1\n{'..acolor2..'}/cmd2\n{'..acolor2..'}/cmd3\n{'..acolor4..'}Быстрая выдача мута\n{'..acolor4..'}Быстрый ответ на репорт\n{'..acolor4..'}Быстрое написание ников\n{'..acolor2..'}FChecker\n{'..acolor2..'}chip\n{'..acolor4..'}Удаление спама\t{'..acolor4..'}Включено\n{'..acolor1..'}Быстрая прокачка\n{'..acolor1..'}Анти-изнасилование\n{'..acolor1..'}Отображение информации\t{'..acolor4..'}Чат\n{'..acolor1..'}Автоприветствие\t{'..acolor4..'}Включено\n{'..acolor3..'}Отбор', 'Выбрать', 'Закрыть', 4)
+				sampShowDialog(669, 'AHelper by jo_lac', '{'..acolor3..'}/ahelper\t{'..acolor4..'}Р‘Р°Р·РѕРІР°СЏ РєРѕРјР°РЅРґР°\n{'..acolor4..'}/msgk\n{'..acolor2..'}/msg1\n{'..acolor2..'}/msg2\n{'..acolor2..'}/msg3\n{'..acolor2..'}/msg4\n{'..acolor2..'}/msg5\n{'..acolor2..'}/cmd1\n{'..acolor2..'}/cmd2\n{'..acolor2..'}/cmd3\n{'..acolor4..'}Р‘С‹СЃС‚СЂР°СЏ РІС‹РґР°С‡Р° РјСѓС‚Р°\n{'..acolor4..'}Р‘С‹СЃС‚СЂС‹Р№ РѕС‚РІРµС‚ РЅР° СЂРµРїРѕСЂС‚\n{'..acolor4..'}Р‘С‹СЃС‚СЂРѕРµ РЅР°РїРёСЃР°РЅРёРµ РЅРёРєРѕРІ\n{'..acolor2..'}FChecker\n{'..acolor2..'}chip\n{'..acolor4..'}РЈРґР°Р»РµРЅРёРµ СЃРїР°РјР°\t{'..acolor4..'}Р’РєР»СЋС‡РµРЅРѕ\n{'..acolor1..'}Р‘С‹СЃС‚СЂР°СЏ РїСЂРѕРєР°С‡РєР°\n{'..acolor1..'}РђРЅС‚Рё-РёР·РЅР°СЃРёР»РѕРІР°РЅРёРµ\n{'..acolor1..'}РћС‚РѕР±СЂР°Р¶РµРЅРёРµ РёРЅС„РѕСЂРјР°С†РёРё\t{'..acolor4..'}Р§Р°С‚\n{'..acolor1..'}РђРІС‚РѕРїСЂРёРІРµС‚СЃС‚РІРёРµ\t{'..acolor4..'}Р’РєР»СЋС‡РµРЅРѕ\n{'..acolor3..'}РћС‚Р±РѕСЂ', 'Р’С‹Р±СЂР°С‚СЊ', 'Р—Р°РєСЂС‹С‚СЊ', 4)
 			else
-				sampShowDialog(669, 'AHelper by jo_lac', '{'..acolor3..'}/ahelper\t{'..acolor4..'}Базовая команда\n{'..acolor4..'}/msgk\n{'..acolor2..'}/msg1\n{'..acolor2..'}/msg2\n{'..acolor2..'}/msg3\n{'..acolor2..'}/msg4\n{'..acolor2..'}/msg5\n{'..acolor2..'}/cmd1\n{'..acolor2..'}/cmd2\n{'..acolor2..'}/cmd3\n{'..acolor4..'}Быстрая выдача мута\n{'..acolor4..'}Быстрый ответ на репорт\n{'..acolor4..'}Быстрое написание ников\n{'..acolor2..'}FChecker\n{'..acolor2..'}chip\n{'..acolor4..'}Удаление спама\t{'..acolor4..'}Включено\n{'..acolor1..'}Быстрая прокачка\n{'..acolor1..'}Анти-изнасилование\n{'..acolor1..'}Отображение информации\t{'..acolor4..'}Чат\n{'..acolor1..'}Автоприветствие\t{'..acolor4..'}Выключено\n{'..acolor3..'}Отбор', 'Выбрать', 'Закрыть', 4)
+				sampShowDialog(669, 'AHelper by jo_lac', '{'..acolor3..'}/ahelper\t{'..acolor4..'}Р‘Р°Р·РѕРІР°СЏ РєРѕРјР°РЅРґР°\n{'..acolor4..'}/msgk\n{'..acolor2..'}/msg1\n{'..acolor2..'}/msg2\n{'..acolor2..'}/msg3\n{'..acolor2..'}/msg4\n{'..acolor2..'}/msg5\n{'..acolor2..'}/cmd1\n{'..acolor2..'}/cmd2\n{'..acolor2..'}/cmd3\n{'..acolor4..'}Р‘С‹СЃС‚СЂР°СЏ РІС‹РґР°С‡Р° РјСѓС‚Р°\n{'..acolor4..'}Р‘С‹СЃС‚СЂС‹Р№ РѕС‚РІРµС‚ РЅР° СЂРµРїРѕСЂС‚\n{'..acolor4..'}Р‘С‹СЃС‚СЂРѕРµ РЅР°РїРёСЃР°РЅРёРµ РЅРёРєРѕРІ\n{'..acolor2..'}FChecker\n{'..acolor2..'}chip\n{'..acolor4..'}РЈРґР°Р»РµРЅРёРµ СЃРїР°РјР°\t{'..acolor4..'}Р’РєР»СЋС‡РµРЅРѕ\n{'..acolor1..'}Р‘С‹СЃС‚СЂР°СЏ РїСЂРѕРєР°С‡РєР°\n{'..acolor1..'}РђРЅС‚Рё-РёР·РЅР°СЃРёР»РѕРІР°РЅРёРµ\n{'..acolor1..'}РћС‚РѕР±СЂР°Р¶РµРЅРёРµ РёРЅС„РѕСЂРјР°С†РёРё\t{'..acolor4..'}Р§Р°С‚\n{'..acolor1..'}РђРІС‚РѕРїСЂРёРІРµС‚СЃС‚РІРёРµ\t{'..acolor4..'}Р’С‹РєР»СЋС‡РµРЅРѕ\n{'..acolor3..'}РћС‚Р±РѕСЂ', 'Р’С‹Р±СЂР°С‚СЊ', 'Р—Р°РєСЂС‹С‚СЊ', 4)
 			end
 		else
 			if json.asms[1] then
-				sampShowDialog(669, 'AHelper by jo_lac', '{'..acolor3..'}/ahelper\t{'..acolor4..'}Базовая команда\n{'..acolor4..'}/msgk\n{'..acolor2..'}/msg1\n{'..acolor2..'}/msg2\n{'..acolor2..'}/msg3\n{'..acolor2..'}/msg4\n{'..acolor2..'}/msg5\n{'..acolor2..'}/cmd1\n{'..acolor2..'}/cmd2\n{'..acolor2..'}/cmd3\n{'..acolor4..'}Быстрая выдача мута\n{'..acolor4..'}Быстрый ответ на репорт\n{'..acolor4..'}Быстрое написание ников\n{'..acolor2..'}FChecker\n{'..acolor2..'}chip\n{'..acolor4..'}Удаление спама\t{'..acolor4..'}Включено\n{'..acolor1..'}Быстрая прокачка\n{'..acolor1..'}Анти-изнасилование\n{'..acolor1..'}Отображение информации\t{'..acolor4..'}Диалог\n{'..acolor1..'}Автоприветствие\t{'..acolor4..'}Включено\n{'..acolor3..'}Отбор', 'Выбрать', 'Закрыть', 4)
+				sampShowDialog(669, 'AHelper by jo_lac', '{'..acolor3..'}/ahelper\t{'..acolor4..'}Р‘Р°Р·РѕРІР°СЏ РєРѕРјР°РЅРґР°\n{'..acolor4..'}/msgk\n{'..acolor2..'}/msg1\n{'..acolor2..'}/msg2\n{'..acolor2..'}/msg3\n{'..acolor2..'}/msg4\n{'..acolor2..'}/msg5\n{'..acolor2..'}/cmd1\n{'..acolor2..'}/cmd2\n{'..acolor2..'}/cmd3\n{'..acolor4..'}Р‘С‹СЃС‚СЂР°СЏ РІС‹РґР°С‡Р° РјСѓС‚Р°\n{'..acolor4..'}Р‘С‹СЃС‚СЂС‹Р№ РѕС‚РІРµС‚ РЅР° СЂРµРїРѕСЂС‚\n{'..acolor4..'}Р‘С‹СЃС‚СЂРѕРµ РЅР°РїРёСЃР°РЅРёРµ РЅРёРєРѕРІ\n{'..acolor2..'}FChecker\n{'..acolor2..'}chip\n{'..acolor4..'}РЈРґР°Р»РµРЅРёРµ СЃРїР°РјР°\t{'..acolor4..'}Р’РєР»СЋС‡РµРЅРѕ\n{'..acolor1..'}Р‘С‹СЃС‚СЂР°СЏ РїСЂРѕРєР°С‡РєР°\n{'..acolor1..'}РђРЅС‚Рё-РёР·РЅР°СЃРёР»РѕРІР°РЅРёРµ\n{'..acolor1..'}РћС‚РѕР±СЂР°Р¶РµРЅРёРµ РёРЅС„РѕСЂРјР°С†РёРё\t{'..acolor4..'}Р”РёР°Р»РѕРі\n{'..acolor1..'}РђРІС‚РѕРїСЂРёРІРµС‚СЃС‚РІРёРµ\t{'..acolor4..'}Р’РєР»СЋС‡РµРЅРѕ\n{'..acolor3..'}РћС‚Р±РѕСЂ', 'Р’С‹Р±СЂР°С‚СЊ', 'Р—Р°РєСЂС‹С‚СЊ', 4)
 			else
-				sampShowDialog(669, 'AHelper by jo_lac', '{'..acolor3..'}/ahelper\t{'..acolor4..'}Базовая команда\n{'..acolor4..'}/msgk\n{'..acolor2..'}/msg1\n{'..acolor2..'}/msg2\n{'..acolor2..'}/msg3\n{'..acolor2..'}/msg4\n{'..acolor2..'}/msg5\n{'..acolor2..'}/cmd1\n{'..acolor2..'}/cmd2\n{'..acolor2..'}/cmd3\n{'..acolor4..'}Быстрая выдача мута\n{'..acolor4..'}Быстрый ответ на репорт\n{'..acolor4..'}Быстрое написание ников\n{'..acolor2..'}FChecker\n{'..acolor2..'}chip\n{'..acolor4..'}Удаление спама\t{'..acolor4..'}Включено\n{'..acolor1..'}Быстрая прокачка\n{'..acolor1..'}Анти-изнасилование\n{'..acolor1..'}Отображение информации\t{'..acolor4..'}Диалог\n{'..acolor1..'}Автоприветствие\t{'..acolor4..'}Выключено\n{'..acolor3..'}Отбор', 'Выбрать', 'Закрыть', 4)
+				sampShowDialog(669, 'AHelper by jo_lac', '{'..acolor3..'}/ahelper\t{'..acolor4..'}Р‘Р°Р·РѕРІР°СЏ РєРѕРјР°РЅРґР°\n{'..acolor4..'}/msgk\n{'..acolor2..'}/msg1\n{'..acolor2..'}/msg2\n{'..acolor2..'}/msg3\n{'..acolor2..'}/msg4\n{'..acolor2..'}/msg5\n{'..acolor2..'}/cmd1\n{'..acolor2..'}/cmd2\n{'..acolor2..'}/cmd3\n{'..acolor4..'}Р‘С‹СЃС‚СЂР°СЏ РІС‹РґР°С‡Р° РјСѓС‚Р°\n{'..acolor4..'}Р‘С‹СЃС‚СЂС‹Р№ РѕС‚РІРµС‚ РЅР° СЂРµРїРѕСЂС‚\n{'..acolor4..'}Р‘С‹СЃС‚СЂРѕРµ РЅР°РїРёСЃР°РЅРёРµ РЅРёРєРѕРІ\n{'..acolor2..'}FChecker\n{'..acolor2..'}chip\n{'..acolor4..'}РЈРґР°Р»РµРЅРёРµ СЃРїР°РјР°\t{'..acolor4..'}Р’РєР»СЋС‡РµРЅРѕ\n{'..acolor1..'}Р‘С‹СЃС‚СЂР°СЏ РїСЂРѕРєР°С‡РєР°\n{'..acolor1..'}РђРЅС‚Рё-РёР·РЅР°СЃРёР»РѕРІР°РЅРёРµ\n{'..acolor1..'}РћС‚РѕР±СЂР°Р¶РµРЅРёРµ РёРЅС„РѕСЂРјР°С†РёРё\t{'..acolor4..'}Р”РёР°Р»РѕРі\n{'..acolor1..'}РђРІС‚РѕРїСЂРёРІРµС‚СЃС‚РІРёРµ\t{'..acolor4..'}Р’С‹РєР»СЋС‡РµРЅРѕ\n{'..acolor3..'}РћС‚Р±РѕСЂ', 'Р’С‹Р±СЂР°С‚СЊ', 'Р—Р°РєСЂС‹С‚СЊ', 4)
 			end
 		end
 	else
 		if json.chat then
 			if json.asms[1] then
-				sampShowDialog(669, 'AHelper by jo_lac', '{'..acolor3..'}/ahelper\t{'..acolor4..'}Базовая команда\n{'..acolor4..'}/msgk\n{'..acolor2..'}/msg1\n{'..acolor2..'}/msg2\n{'..acolor2..'}/msg3\n{'..acolor2..'}/msg4\n{'..acolor2..'}/msg5\n{'..acolor2..'}/cmd1\n{'..acolor2..'}/cmd2\n{'..acolor2..'}/cmd3\n{'..acolor4..'}Быстрая выдача мута\n{'..acolor4..'}Быстрый ответ на репорт\n{'..acolor4..'}Быстрое написание ников\n{'..acolor2..'}FChecker\n{'..acolor2..'}chip\n{'..acolor4..'}Удаление спама\t{'..acolor4..'}Выключено\n{'..acolor1..'}Быстрая прокачка\n{'..acolor1..'}Анти-изнасилование\n{'..acolor1..'}Отображение информации\t{'..acolor4..'}Чат\n{'..acolor1..'}Автоприветствие\t{'..acolor4..'}Включено\n{'..acolor3..'}Отбор', 'Выбрать', 'Закрыть', 4)
+				sampShowDialog(669, 'AHelper by jo_lac', '{'..acolor3..'}/ahelper\t{'..acolor4..'}Р‘Р°Р·РѕРІР°СЏ РєРѕРјР°РЅРґР°\n{'..acolor4..'}/msgk\n{'..acolor2..'}/msg1\n{'..acolor2..'}/msg2\n{'..acolor2..'}/msg3\n{'..acolor2..'}/msg4\n{'..acolor2..'}/msg5\n{'..acolor2..'}/cmd1\n{'..acolor2..'}/cmd2\n{'..acolor2..'}/cmd3\n{'..acolor4..'}Р‘С‹СЃС‚СЂР°СЏ РІС‹РґР°С‡Р° РјСѓС‚Р°\n{'..acolor4..'}Р‘С‹СЃС‚СЂС‹Р№ РѕС‚РІРµС‚ РЅР° СЂРµРїРѕСЂС‚\n{'..acolor4..'}Р‘С‹СЃС‚СЂРѕРµ РЅР°РїРёСЃР°РЅРёРµ РЅРёРєРѕРІ\n{'..acolor2..'}FChecker\n{'..acolor2..'}chip\n{'..acolor4..'}РЈРґР°Р»РµРЅРёРµ СЃРїР°РјР°\t{'..acolor4..'}Р’С‹РєР»СЋС‡РµРЅРѕ\n{'..acolor1..'}Р‘С‹СЃС‚СЂР°СЏ РїСЂРѕРєР°С‡РєР°\n{'..acolor1..'}РђРЅС‚Рё-РёР·РЅР°СЃРёР»РѕРІР°РЅРёРµ\n{'..acolor1..'}РћС‚РѕР±СЂР°Р¶РµРЅРёРµ РёРЅС„РѕСЂРјР°С†РёРё\t{'..acolor4..'}Р§Р°С‚\n{'..acolor1..'}РђРІС‚РѕРїСЂРёРІРµС‚СЃС‚РІРёРµ\t{'..acolor4..'}Р’РєР»СЋС‡РµРЅРѕ\n{'..acolor3..'}РћС‚Р±РѕСЂ', 'Р’С‹Р±СЂР°С‚СЊ', 'Р—Р°РєСЂС‹С‚СЊ', 4)
 			else
-				sampShowDialog(669, 'AHelper by jo_lac', '{'..acolor3..'}/ahelper\t{'..acolor4..'}Базовая команда\n{'..acolor4..'}/msgk\n{'..acolor2..'}/msg1\n{'..acolor2..'}/msg2\n{'..acolor2..'}/msg3\n{'..acolor2..'}/msg4\n{'..acolor2..'}/msg5\n{'..acolor2..'}/cmd1\n{'..acolor2..'}/cmd2\n{'..acolor2..'}/cmd3\n{'..acolor4..'}Быстрая выдача мута\n{'..acolor4..'}Быстрый ответ на репорт\n{'..acolor4..'}Быстрое написание ников\n{'..acolor2..'}FChecker\n{'..acolor2..'}chip\n{'..acolor4..'}Удаление спама\t{'..acolor4..'}Выключено\n{'..acolor1..'}Быстрая прокачка\n{'..acolor1..'}Анти-изнасилование\n{'..acolor1..'}Отображение информации\t{'..acolor4..'}Чат\n{'..acolor1..'}Автоприветствие\t{'..acolor4..'}Выключено\n{'..acolor3..'}Отбор', 'Выбрать', 'Закрыть', 4)
+				sampShowDialog(669, 'AHelper by jo_lac', '{'..acolor3..'}/ahelper\t{'..acolor4..'}Р‘Р°Р·РѕРІР°СЏ РєРѕРјР°РЅРґР°\n{'..acolor4..'}/msgk\n{'..acolor2..'}/msg1\n{'..acolor2..'}/msg2\n{'..acolor2..'}/msg3\n{'..acolor2..'}/msg4\n{'..acolor2..'}/msg5\n{'..acolor2..'}/cmd1\n{'..acolor2..'}/cmd2\n{'..acolor2..'}/cmd3\n{'..acolor4..'}Р‘С‹СЃС‚СЂР°СЏ РІС‹РґР°С‡Р° РјСѓС‚Р°\n{'..acolor4..'}Р‘С‹СЃС‚СЂС‹Р№ РѕС‚РІРµС‚ РЅР° СЂРµРїРѕСЂС‚\n{'..acolor4..'}Р‘С‹СЃС‚СЂРѕРµ РЅР°РїРёСЃР°РЅРёРµ РЅРёРєРѕРІ\n{'..acolor2..'}FChecker\n{'..acolor2..'}chip\n{'..acolor4..'}РЈРґР°Р»РµРЅРёРµ СЃРїР°РјР°\t{'..acolor4..'}Р’С‹РєР»СЋС‡РµРЅРѕ\n{'..acolor1..'}Р‘С‹СЃС‚СЂР°СЏ РїСЂРѕРєР°С‡РєР°\n{'..acolor1..'}РђРЅС‚Рё-РёР·РЅР°СЃРёР»РѕРІР°РЅРёРµ\n{'..acolor1..'}РћС‚РѕР±СЂР°Р¶РµРЅРёРµ РёРЅС„РѕСЂРјР°С†РёРё\t{'..acolor4..'}Р§Р°С‚\n{'..acolor1..'}РђРІС‚РѕРїСЂРёРІРµС‚СЃС‚РІРёРµ\t{'..acolor4..'}Р’С‹РєР»СЋС‡РµРЅРѕ\n{'..acolor3..'}РћС‚Р±РѕСЂ', 'Р’С‹Р±СЂР°С‚СЊ', 'Р—Р°РєСЂС‹С‚СЊ', 4)
 			end
 		else
 			if json.asms[1] then
-				sampShowDialog(669, 'AHelper by jo_lac', '{'..acolor3..'}/ahelper\t{'..acolor4..'}Базовая команда\n{'..acolor4..'}/msgk\n{'..acolor2..'}/msg1\n{'..acolor2..'}/msg2\n{'..acolor2..'}/msg3\n{'..acolor2..'}/msg4\n{'..acolor2..'}/msg5\n{'..acolor2..'}/cmd1\n{'..acolor2..'}/cmd2\n{'..acolor2..'}/cmd3\n{'..acolor4..'}Быстрая выдача мута\n{'..acolor4..'}Быстрый ответ на репорт\n{'..acolor4..'}Быстрое написание ников\n{'..acolor2..'}FChecker\n{'..acolor2..'}chip\n{'..acolor4..'}Удаление спама\t{'..acolor4..'}Выключено\n{'..acolor1..'}Быстрая прокачка\n{'..acolor1..'}Анти-изнасилование\n{'..acolor1..'}Отображение информации\t{'..acolor4..'}Диалог\n{'..acolor1..'}Автоприветствие\t{'..acolor4..'}Включено\n{'..acolor3..'}Отбор', 'Выбрать', 'Закрыть', 4)
+				sampShowDialog(669, 'AHelper by jo_lac', '{'..acolor3..'}/ahelper\t{'..acolor4..'}Р‘Р°Р·РѕРІР°СЏ РєРѕРјР°РЅРґР°\n{'..acolor4..'}/msgk\n{'..acolor2..'}/msg1\n{'..acolor2..'}/msg2\n{'..acolor2..'}/msg3\n{'..acolor2..'}/msg4\n{'..acolor2..'}/msg5\n{'..acolor2..'}/cmd1\n{'..acolor2..'}/cmd2\n{'..acolor2..'}/cmd3\n{'..acolor4..'}Р‘С‹СЃС‚СЂР°СЏ РІС‹РґР°С‡Р° РјСѓС‚Р°\n{'..acolor4..'}Р‘С‹СЃС‚СЂС‹Р№ РѕС‚РІРµС‚ РЅР° СЂРµРїРѕСЂС‚\n{'..acolor4..'}Р‘С‹СЃС‚СЂРѕРµ РЅР°РїРёСЃР°РЅРёРµ РЅРёРєРѕРІ\n{'..acolor2..'}FChecker\n{'..acolor2..'}chip\n{'..acolor4..'}РЈРґР°Р»РµРЅРёРµ СЃРїР°РјР°\t{'..acolor4..'}Р’С‹РєР»СЋС‡РµРЅРѕ\n{'..acolor1..'}Р‘С‹СЃС‚СЂР°СЏ РїСЂРѕРєР°С‡РєР°\n{'..acolor1..'}РђРЅС‚Рё-РёР·РЅР°СЃРёР»РѕРІР°РЅРёРµ\n{'..acolor1..'}РћС‚РѕР±СЂР°Р¶РµРЅРёРµ РёРЅС„РѕСЂРјР°С†РёРё\t{'..acolor4..'}Р”РёР°Р»РѕРі\n{'..acolor1..'}РђРІС‚РѕРїСЂРёРІРµС‚СЃС‚РІРёРµ\t{'..acolor4..'}Р’РєР»СЋС‡РµРЅРѕ\n{'..acolor3..'}РћС‚Р±РѕСЂ', 'Р’С‹Р±СЂР°С‚СЊ', 'Р—Р°РєСЂС‹С‚СЊ', 4)
 			else
-				sampShowDialog(669, 'AHelper by jo_lac', '{'..acolor3..'}/ahelper\t{'..acolor4..'}Базовая команда\n{'..acolor4..'}/msgk\n{'..acolor2..'}/msg1\n{'..acolor2..'}/msg2\n{'..acolor2..'}/msg3\n{'..acolor2..'}/msg4\n{'..acolor2..'}/msg5\n{'..acolor2..'}/cmd1\n{'..acolor2..'}/cmd2\n{'..acolor2..'}/cmd3\n{'..acolor4..'}Быстрая выдача мута\n{'..acolor4..'}Быстрый ответ на репорт\n{'..acolor4..'}Быстрое написание ников\n{'..acolor2..'}FChecker\n{'..acolor2..'}chip\n{'..acolor4..'}Удаление спама\t{'..acolor4..'}Выключено\n{'..acolor1..'}Быстрая прокачка\n{'..acolor1..'}Анти-изнасилование\n{'..acolor1..'}Отображение информации\t{'..acolor4..'}Диалог\n{'..acolor1..'}Автоприветствие\t{'..acolor4..'}Выключено\n{'..acolor3..'}Отбор', 'Выбрать', 'Закрыть', 4)
+				sampShowDialog(669, 'AHelper by jo_lac', '{'..acolor3..'}/ahelper\t{'..acolor4..'}Р‘Р°Р·РѕРІР°СЏ РєРѕРјР°РЅРґР°\n{'..acolor4..'}/msgk\n{'..acolor2..'}/msg1\n{'..acolor2..'}/msg2\n{'..acolor2..'}/msg3\n{'..acolor2..'}/msg4\n{'..acolor2..'}/msg5\n{'..acolor2..'}/cmd1\n{'..acolor2..'}/cmd2\n{'..acolor2..'}/cmd3\n{'..acolor4..'}Р‘С‹СЃС‚СЂР°СЏ РІС‹РґР°С‡Р° РјСѓС‚Р°\n{'..acolor4..'}Р‘С‹СЃС‚СЂС‹Р№ РѕС‚РІРµС‚ РЅР° СЂРµРїРѕСЂС‚\n{'..acolor4..'}Р‘С‹СЃС‚СЂРѕРµ РЅР°РїРёСЃР°РЅРёРµ РЅРёРєРѕРІ\n{'..acolor2..'}FChecker\n{'..acolor2..'}chip\n{'..acolor4..'}РЈРґР°Р»РµРЅРёРµ СЃРїР°РјР°\t{'..acolor4..'}Р’С‹РєР»СЋС‡РµРЅРѕ\n{'..acolor1..'}Р‘С‹СЃС‚СЂР°СЏ РїСЂРѕРєР°С‡РєР°\n{'..acolor1..'}РђРЅС‚Рё-РёР·РЅР°СЃРёР»РѕРІР°РЅРёРµ\n{'..acolor1..'}РћС‚РѕР±СЂР°Р¶РµРЅРёРµ РёРЅС„РѕСЂРјР°С†РёРё\t{'..acolor4..'}Р”РёР°Р»РѕРі\n{'..acolor1..'}РђРІС‚РѕРїСЂРёРІРµС‚СЃС‚РІРёРµ\t{'..acolor4..'}Р’С‹РєР»СЋС‡РµРЅРѕ\n{'..acolor3..'}РћС‚Р±РѕСЂ', 'Р’С‹Р±СЂР°С‚СЊ', 'Р—Р°РєСЂС‹С‚СЊ', 4)
 			end
 		end
 	end
@@ -841,53 +838,53 @@ function dialog()
 		local result, button, list, _ = sampHasDialogRespond(669)
 		if result then if button == 1 then
 			if list == 0 then
-				sampShowDialog(670, 'AHelper', '{'..acolor2..'}/ahelper\n{'..acolor3..'}Команда открывает диалог с информацией о командах.\n{'..acolor3..'}Зачем ты вообще сюда смотришь?\n{ff0000}Ты же смог открыть прошлый диалог!', 'Закрыть', '', 0)
+				sampShowDialog(670, 'AHelper', '{'..acolor2..'}/ahelper\n{'..acolor3..'}РљРѕРјР°РЅРґР° РѕС‚РєСЂС‹РІР°РµС‚ РґРёР°Р»РѕРі СЃ РёРЅС„РѕСЂРјР°С†РёРµР№ Рѕ РєРѕРјР°РЅРґР°С….\n{'..acolor3..'}Р—Р°С‡РµРј С‚С‹ РІРѕРѕР±С‰Рµ СЃСЋРґР° СЃРјРѕС‚СЂРёС€СЊ?\n{ff0000}РўС‹ Р¶Рµ СЃРјРѕРі РѕС‚РєСЂС‹С‚СЊ РїСЂРѕС€Р»С‹Р№ РґРёР°Р»РѕРі!', 'Р—Р°РєСЂС‹С‚СЊ', '', 0)
 			elseif list == 1 then
-				sampShowDialog(676, 'AHelper', '{'..acolor3..'}Информация\t{'..acolor3..'}/msgk\n{'..acolor2..'}/fuelcars\t{'..acolor2..'}'..tostring(json.msgk[1])..'\n{'..acolor2..'}Требование /sduty\t{'..acolor2..'}'..tostring(json.msgk[2])..'\n{'..acolor4..'}Настройки конкурса', 'Выбор', 'Закрыть', 4)
+				sampShowDialog(676, 'AHelper', '{'..acolor3..'}РРЅС„РѕСЂРјР°С†РёСЏ\t{'..acolor3..'}/msgk\n{'..acolor2..'}/fuelcars\t{'..acolor2..'}'..tostring(json.msgk[1])..'\n{'..acolor2..'}РўСЂРµР±РѕРІР°РЅРёРµ /sduty\t{'..acolor2..'}'..tostring(json.msgk[2])..'\n{'..acolor4..'}РќР°СЃС‚СЂРѕР№РєРё РєРѕРЅРєСѓСЂСЃР°', 'Р’С‹Р±РѕСЂ', 'Р—Р°РєСЂС‹С‚СЊ', 4)
 			elseif list == 2 then
-				sampShowDialog(671, 'AHelper', '{'..acolor3..'}Информация\t{'..acolor3..'}/msg1\n{'..acolor2..'}/fuelcars\t{'..acolor2..'}'..tostring(json.msg1[1])..'\n{'..acolor2..'}Требование /sduty\t{'..acolor2..'}'..tostring(json.msg1[2]), 'Выбор', 'Закрыть', 4)
+				sampShowDialog(671, 'AHelper', '{'..acolor3..'}РРЅС„РѕСЂРјР°С†РёСЏ\t{'..acolor3..'}/msg1\n{'..acolor2..'}/fuelcars\t{'..acolor2..'}'..tostring(json.msg1[1])..'\n{'..acolor2..'}РўСЂРµР±РѕРІР°РЅРёРµ /sduty\t{'..acolor2..'}'..tostring(json.msg1[2]), 'Р’С‹Р±РѕСЂ', 'Р—Р°РєСЂС‹С‚СЊ', 4)
 			elseif list == 3 then
-				sampShowDialog(672, 'AHelper', '{'..acolor3..'}Информация\t{'..acolor3..'}/msg2\n{'..acolor2..'}/fuelcars\t{'..acolor2..'}'..tostring(json.msg2[1])..'\n{'..acolor2..'}Требование /sduty\t{'..acolor2..'}'..tostring(json.msg2[2]), 'Выбор', 'Закрыть', 4)
+				sampShowDialog(672, 'AHelper', '{'..acolor3..'}РРЅС„РѕСЂРјР°С†РёСЏ\t{'..acolor3..'}/msg2\n{'..acolor2..'}/fuelcars\t{'..acolor2..'}'..tostring(json.msg2[1])..'\n{'..acolor2..'}РўСЂРµР±РѕРІР°РЅРёРµ /sduty\t{'..acolor2..'}'..tostring(json.msg2[2]), 'Р’С‹Р±РѕСЂ', 'Р—Р°РєСЂС‹С‚СЊ', 4)
 			elseif list == 4 then
-				sampShowDialog(673, 'AHelper', '{'..acolor3..'}Информация\t{'..acolor3..'}/msg3\n{'..acolor2..'}/fuelcars\t{'..acolor2..'}'..tostring(json.msg3[1])..'\n{'..acolor2..'}Требование /sduty\t{'..acolor2..'}'..tostring(json.msg3[2]), 'Выбор', 'Закрыть', 4)
+				sampShowDialog(673, 'AHelper', '{'..acolor3..'}РРЅС„РѕСЂРјР°С†РёСЏ\t{'..acolor3..'}/msg3\n{'..acolor2..'}/fuelcars\t{'..acolor2..'}'..tostring(json.msg3[1])..'\n{'..acolor2..'}РўСЂРµР±РѕРІР°РЅРёРµ /sduty\t{'..acolor2..'}'..tostring(json.msg3[2]), 'Р’С‹Р±РѕСЂ', 'Р—Р°РєСЂС‹С‚СЊ', 4)
 			elseif list == 5 then
-				sampShowDialog(674, 'AHelper', '{'..acolor3..'}Информация\t{'..acolor3..'}/msg4\n{'..acolor2..'}/fuelcars\t{'..acolor2..'}'..tostring(json.msg4[1])..'\n{'..acolor2..'}Требование /sduty\t{'..acolor2..'}'..tostring(json.msg4[2]), 'Выбор', 'Закрыть', 4)
+				sampShowDialog(674, 'AHelper', '{'..acolor3..'}РРЅС„РѕСЂРјР°С†РёСЏ\t{'..acolor3..'}/msg4\n{'..acolor2..'}/fuelcars\t{'..acolor2..'}'..tostring(json.msg4[1])..'\n{'..acolor2..'}РўСЂРµР±РѕРІР°РЅРёРµ /sduty\t{'..acolor2..'}'..tostring(json.msg4[2]), 'Р’С‹Р±РѕСЂ', 'Р—Р°РєСЂС‹С‚СЊ', 4)
 			elseif list == 6 then
-				sampShowDialog(675, 'AHelper', '{'..acolor3..'}Информация\t{'..acolor3..'}/msg5\n{'..acolor2..'}/fuelcars\t{'..acolor2..'}'..tostring(json.msg5[1])..'\n{'..acolor2..'}Требование /sduty\t{'..acolor2..'}'..tostring(json.msg5[2]), 'Выбор', 'Закрыть', 4)
+				sampShowDialog(675, 'AHelper', '{'..acolor3..'}РРЅС„РѕСЂРјР°С†РёСЏ\t{'..acolor3..'}/msg5\n{'..acolor2..'}/fuelcars\t{'..acolor2..'}'..tostring(json.msg5[1])..'\n{'..acolor2..'}РўСЂРµР±РѕРІР°РЅРёРµ /sduty\t{'..acolor2..'}'..tostring(json.msg5[2]), 'Р’С‹Р±РѕСЂ', 'Р—Р°РєСЂС‹С‚СЊ', 4)
 			elseif list == 7 then
 				if #json['cmd1'][4] < #json['cmd1'][3] then kd = true else kd = false end
-				sampShowDialog(801, 'AHelper', '{'..acolor3..'}Информация\t{'..acolor3..'}/cmd1\n{'..acolor2..'}/fuelcars\t{'..acolor2..'}'..tostring(json.cmd1[1])..'\n{'..acolor2..'}Требование /sduty\t{'..acolor2..'}'..tostring(json.cmd1[2])..'\n{'..acolor4..'}Добавить строку\n{'..acolor4..'}Очистить\t{'..acolor4..'}'..tostring(#json.cmd1[3])..' стр.', 'Выбор', 'Закрыть', 4)
+				sampShowDialog(801, 'AHelper', '{'..acolor3..'}РРЅС„РѕСЂРјР°С†РёСЏ\t{'..acolor3..'}/cmd1\n{'..acolor2..'}/fuelcars\t{'..acolor2..'}'..tostring(json.cmd1[1])..'\n{'..acolor2..'}РўСЂРµР±РѕРІР°РЅРёРµ /sduty\t{'..acolor2..'}'..tostring(json.cmd1[2])..'\n{'..acolor4..'}Р”РѕР±Р°РІРёС‚СЊ СЃС‚СЂРѕРєСѓ\n{'..acolor4..'}РћС‡РёСЃС‚РёС‚СЊ\t{'..acolor4..'}'..tostring(#json.cmd1[3])..' СЃС‚СЂ.', 'Р’С‹Р±РѕСЂ', 'Р—Р°РєСЂС‹С‚СЊ', 4)
 			elseif list == 8 then
 				if #json['cmd2'][4] < #json['cmd2'][3] then kd = true else kd = false end
-				sampShowDialog(802, 'AHelper', '{'..acolor3..'}Информация\t{'..acolor3..'}/cmd2\n{'..acolor2..'}/fuelcars\t{'..acolor2..'}'..tostring(json.cmd2[1])..'\n{'..acolor2..'}Требование /sduty\t{'..acolor2..'}'..tostring(json.cmd2[2])..'\n{'..acolor4..'}Добавить строку\n{'..acolor4..'}Очистить\t{'..acolor4..'}'..tostring(#json.cmd2[3])..' стр.', 'Выбор', 'Закрыть', 4)
+				sampShowDialog(802, 'AHelper', '{'..acolor3..'}РРЅС„РѕСЂРјР°С†РёСЏ\t{'..acolor3..'}/cmd2\n{'..acolor2..'}/fuelcars\t{'..acolor2..'}'..tostring(json.cmd2[1])..'\n{'..acolor2..'}РўСЂРµР±РѕРІР°РЅРёРµ /sduty\t{'..acolor2..'}'..tostring(json.cmd2[2])..'\n{'..acolor4..'}Р”РѕР±Р°РІРёС‚СЊ СЃС‚СЂРѕРєСѓ\n{'..acolor4..'}РћС‡РёСЃС‚РёС‚СЊ\t{'..acolor4..'}'..tostring(#json.cmd2[3])..' СЃС‚СЂ.', 'Р’С‹Р±РѕСЂ', 'Р—Р°РєСЂС‹С‚СЊ', 4)
 			elseif list == 9 then
 				if #json['cmd3'][4] < #json['cmd3'][3] then kd = true else kd = false end
-				sampShowDialog(803, 'AHelper', '{'..acolor3..'}Информация\t{'..acolor3..'}/cmd3\n{'..acolor2..'}/fuelcars\t{'..acolor2..'}'..tostring(json.cmd3[1])..'\n{'..acolor2..'}Требование /sduty\t{'..acolor2..'}'..tostring(json.cmd3[2])..'\n{'..acolor4..'}Добавить строку\n{'..acolor4..'}Очистить\t{'..acolor4..'}'..tostring(#json.cmd3[3])..' стр.', 'Выбор', 'Закрыть', 4)
+				sampShowDialog(803, 'AHelper', '{'..acolor3..'}РРЅС„РѕСЂРјР°С†РёСЏ\t{'..acolor3..'}/cmd3\n{'..acolor2..'}/fuelcars\t{'..acolor2..'}'..tostring(json.cmd3[1])..'\n{'..acolor2..'}РўСЂРµР±РѕРІР°РЅРёРµ /sduty\t{'..acolor2..'}'..tostring(json.cmd3[2])..'\n{'..acolor4..'}Р”РѕР±Р°РІРёС‚СЊ СЃС‚СЂРѕРєСѓ\n{'..acolor4..'}РћС‡РёСЃС‚РёС‚СЊ\t{'..acolor4..'}'..tostring(#json.cmd3[3])..' СЃС‚СЂ.', 'Р’С‹Р±РѕСЂ', 'Р—Р°РєСЂС‹С‚СЊ', 4)
 			elseif list == 10 then
 				if json.amute then
-					sampShowDialog(677, 'AHelper', '{'..acolor3..'}Информация\t{'..acolor3..'}Быстрая выдача мута\n{'..acolor2..'}Состояние\t{'..acolor2..'}Включено', 'Выбор', 'Закрыть', 4)
+					sampShowDialog(677, 'AHelper', '{'..acolor3..'}РРЅС„РѕСЂРјР°С†РёСЏ\t{'..acolor3..'}Р‘С‹СЃС‚СЂР°СЏ РІС‹РґР°С‡Р° РјСѓС‚Р°\n{'..acolor2..'}РЎРѕСЃС‚РѕСЏРЅРёРµ\t{'..acolor2..'}Р’РєР»СЋС‡РµРЅРѕ', 'Р’С‹Р±РѕСЂ', 'Р—Р°РєСЂС‹С‚СЊ', 4)
 				elseif json.amute == false then
-					sampShowDialog(677, 'AHelper', '{'..acolor3..'}Информация\t{'..acolor3..'}Быстрая выдача мута\n{'..acolor2..'}Состояние\t{'..acolor2..'}Выключено', 'Выбор', 'Закрыть', 4)
+					sampShowDialog(677, 'AHelper', '{'..acolor3..'}РРЅС„РѕСЂРјР°С†РёСЏ\t{'..acolor3..'}Р‘С‹СЃС‚СЂР°СЏ РІС‹РґР°С‡Р° РјСѓС‚Р°\n{'..acolor2..'}РЎРѕСЃС‚РѕСЏРЅРёРµ\t{'..acolor2..'}Р’С‹РєР»СЋС‡РµРЅРѕ', 'Р’С‹Р±РѕСЂ', 'Р—Р°РєСЂС‹С‚СЊ', 4)
 				end
 			elseif list == 11 then
 				list11()
 			elseif list == 12 then
-				sampShowDialog(670, 'AHelper', '{'..acolor3..'}Быстрое написание ников\n{'..acolor2..'}Если Вы напишите в чат сообщение, содержащее "@id", где id - id игрока на сервере,\n{'..acolor2..'}то скрипт заменит "@id" на "Nick_Name", где Nick_Name - ник того игрока, чей id Вы ввели.', 'Закрыть', '', 0)
+				sampShowDialog(670, 'AHelper', '{'..acolor3..'}Р‘С‹СЃС‚СЂРѕРµ РЅР°РїРёСЃР°РЅРёРµ РЅРёРєРѕРІ\n{'..acolor2..'}Р•СЃР»Рё Р’С‹ РЅР°РїРёС€РёС‚Рµ РІ С‡Р°С‚ СЃРѕРѕР±С‰РµРЅРёРµ, СЃРѕРґРµСЂР¶Р°С‰РµРµ "@id", РіРґРµ id - id РёРіСЂРѕРєР° РЅР° СЃРµСЂРІРµСЂРµ,\n{'..acolor2..'}С‚Рѕ СЃРєСЂРёРїС‚ Р·Р°РјРµРЅРёС‚ "@id" РЅР° "Nick_Name", РіРґРµ Nick_Name - РЅРёРє С‚РѕРіРѕ РёРіСЂРѕРєР°, С‡РµР№ id Р’С‹ РІРІРµР»Рё.', 'Р—Р°РєСЂС‹С‚СЊ', '', 0)
 			elseif list == 13 then
-				sampShowDialog(670, 'AHelper', '{'..acolor3..'}FChecker\n{'..acolor2..'}Показывает информацию о том, кто из Ваших друзей онлайн.\n{'..acolor2..'}Команды:\n{'..acolor2..'}/fcturn - включить/выключить отображение\n{'..acolor2..'}/fcreload - перезагрузить FChecker\n{'..acolor2..'}/fcsize - изменить размер\n{'..acolor2..'}/fcfont - изменить шрифт\n{'..acolor2..'}/fcflag - настроить шрифт\n{'..acolor2..'}/fcadd - добавить друга\n{'..acolor2..'}/fcdelete - удалить из друзей\n{'..acolor2..'}/fcmove - передвинуть табличку с списком друзей', 'Закрыть', '', 0)
+				sampShowDialog(670, 'AHelper', '{'..acolor3..'}FChecker\n{'..acolor2..'}РџРѕРєР°Р·С‹РІР°РµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ С‚РѕРј, РєС‚Рѕ РёР· Р’Р°С€РёС… РґСЂСѓР·РµР№ РѕРЅР»Р°Р№РЅ.\n{'..acolor2..'}РљРѕРјР°РЅРґС‹:\n{'..acolor2..'}/fcturn - РІРєР»СЋС‡РёС‚СЊ/РІС‹РєР»СЋС‡РёС‚СЊ РѕС‚РѕР±СЂР°Р¶РµРЅРёРµ\n{'..acolor2..'}/fcreload - РїРµСЂРµР·Р°РіСЂСѓР·РёС‚СЊ FChecker\n{'..acolor2..'}/fcsize - РёР·РјРµРЅРёС‚СЊ СЂР°Р·РјРµСЂ\n{'..acolor2..'}/fcfont - РёР·РјРµРЅРёС‚СЊ С€СЂРёС„С‚\n{'..acolor2..'}/fcflag - РЅР°СЃС‚СЂРѕРёС‚СЊ С€СЂРёС„С‚\n{'..acolor2..'}/fcadd - РґРѕР±Р°РІРёС‚СЊ РґСЂСѓРіР°\n{'..acolor2..'}/fcdelete - СѓРґР°Р»РёС‚СЊ РёР· РґСЂСѓР·РµР№\n{'..acolor2..'}/fcmove - РїРµСЂРµРґРІРёРЅСѓС‚СЊ С‚Р°Р±Р»РёС‡РєСѓ СЃ СЃРїРёСЃРєРѕРј РґСЂСѓР·РµР№', 'Р—Р°РєСЂС‹С‚СЊ', '', 0)
 			elseif list == 14 then
-				sampShowDialog(670, 'AHelper', '{'..acolor3..'}chip\n{'..acolor2..'}Показывает информацию о IP. Использование: /chip [ip1] [ip2]', 'Закрыть', '', 0)
+				sampShowDialog(670, 'AHelper', '{'..acolor3..'}chip\n{'..acolor2..'}РџРѕРєР°Р·С‹РІР°РµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ IP. РСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ: /chip [ip1] [ip2]', 'Р—Р°РєСЂС‹С‚СЊ', '', 0)
 			elseif list == 15 then
 				json.spam = not json.spam
 				info()
 				save()
 			elseif list == 16 then
-				sampShowDialog(670, 'AHelper', '{'..acolor3..'}Быстрая прокачка\n{'..acolor4..'}Использование:\n{'..acolor2..'}/fcset - указывание того, что надо качать и в каком количестве. \n{'..acolor4..'}Примечание: указывается количество прокачиваний в данный момент, а не требуемое общее количество прокачек.\n{'..acolor2..'}/up - начать прокачку.', 'Закрыть', '', 0)
+				sampShowDialog(670, 'AHelper', '{'..acolor3..'}Р‘С‹СЃС‚СЂР°СЏ РїСЂРѕРєР°С‡РєР°\n{'..acolor4..'}РСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ:\n{'..acolor2..'}/fcset - СѓРєР°Р·С‹РІР°РЅРёРµ С‚РѕРіРѕ, С‡С‚Рѕ РЅР°РґРѕ РєР°С‡Р°С‚СЊ Рё РІ РєР°РєРѕРј РєРѕР»РёС‡РµСЃС‚РІРµ. \n{'..acolor4..'}РџСЂРёРјРµС‡Р°РЅРёРµ: СѓРєР°Р·С‹РІР°РµС‚СЃСЏ РєРѕР»РёС‡РµСЃС‚РІРѕ РїСЂРѕРєР°С‡РёРІР°РЅРёР№ РІ РґР°РЅРЅС‹Р№ РјРѕРјРµРЅС‚, Р° РЅРµ С‚СЂРµР±СѓРµРјРѕРµ РѕР±С‰РµРµ РєРѕР»РёС‡РµСЃС‚РІРѕ РїСЂРѕРєР°С‡РµРє.\n{'..acolor2..'}/up - РЅР°С‡Р°С‚СЊ РїСЂРѕРєР°С‡РєСѓ.', 'Р—Р°РєСЂС‹С‚СЊ', '', 0)
 			elseif list == 17 then
 				if json.iznas then
-					sampShowDialog(679, 'AHelper', '{'..acolor3..'}Информация\t{'..acolor2..'}Анти-изнасилование\n{'..acolor3..'}Состояние\t{'..acolor2..'}Включено', 'Выбор', 'Закрыть',4)
+					sampShowDialog(679, 'AHelper', '{'..acolor3..'}РРЅС„РѕСЂРјР°С†РёСЏ\t{'..acolor2..'}РђРЅС‚Рё-РёР·РЅР°СЃРёР»РѕРІР°РЅРёРµ\n{'..acolor3..'}РЎРѕСЃС‚РѕСЏРЅРёРµ\t{'..acolor2..'}Р’РєР»СЋС‡РµРЅРѕ', 'Р’С‹Р±РѕСЂ', 'Р—Р°РєСЂС‹С‚СЊ',4)
 				elseif json.iznas == false then
-					sampShowDialog(679, 'AHelper', '{'..acolor3..'}Информация\t{'..acolor2..'}Анти-изнасилование\n{'..acolor3..'}Состояние\t{'..acolor2..'}Выключено', 'Выбор', 'Закрыть', 4)
+					sampShowDialog(679, 'AHelper', '{'..acolor3..'}РРЅС„РѕСЂРјР°С†РёСЏ\t{'..acolor2..'}РђРЅС‚Рё-РёР·РЅР°СЃРёР»РѕРІР°РЅРёРµ\n{'..acolor3..'}РЎРѕСЃС‚РѕСЏРЅРёРµ\t{'..acolor2..'}Р’С‹РєР»СЋС‡РµРЅРѕ', 'Р’С‹Р±РѕСЂ', 'Р—Р°РєСЂС‹С‚СЊ', 4)
 				end
 			elseif list == 18 then
 				json.chat = not json.chat
@@ -898,7 +895,7 @@ function dialog()
 				info()
 				save()
 			elseif list == 20 then
-				sampShowDialog(670, 'AHelper', '{'..acolor3..'}Помощь по отборам\n{'..acolor2..'}Использование:\n{'..acolor4..'}/setotbor - установить тип отбора: 1 - гетто, 2 - мафия, 3 - гос. структуры, 4 - саппорты\n{'..acolor4..'}/otbor - начать отбор. Сначала выводятся правила, потом идёт 10-и секундное ожидание.\n{'..acolor4..'}Потом выводится первый вопрос. Для следующих вопросов нужно будет нажимaть B (англ.).', 'Закрыть', '', 0)
+				sampShowDialog(670, 'AHelper', '{'..acolor3..'}РџРѕРјРѕС‰СЊ РїРѕ РѕС‚Р±РѕСЂР°Рј\n{'..acolor2..'}РСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ:\n{'..acolor4..'}/setotbor - СѓСЃС‚Р°РЅРѕРІРёС‚СЊ С‚РёРї РѕС‚Р±РѕСЂР°: 1 - РіРµС‚С‚Рѕ, 2 - РјР°С„РёСЏ, 3 - РіРѕСЃ. СЃС‚СЂСѓРєС‚СѓСЂС‹, 4 - СЃР°РїРїРѕСЂС‚С‹\n{'..acolor4..'}/otbor - РЅР°С‡Р°С‚СЊ РѕС‚Р±РѕСЂ. РЎРЅР°С‡Р°Р»Р° РІС‹РІРѕРґСЏС‚СЃСЏ РїСЂР°РІРёР»Р°, РїРѕС‚РѕРј РёРґС‘С‚ 10-Рё СЃРµРєСѓРЅРґРЅРѕРµ РѕР¶РёРґР°РЅРёРµ.\n{'..acolor4..'}РџРѕС‚РѕРј РІС‹РІРѕРґРёС‚СЃСЏ РїРµСЂРІС‹Р№ РІРѕРїСЂРѕСЃ. Р”Р»СЏ СЃР»РµРґСѓСЋС‰РёС… РІРѕРїСЂРѕСЃРѕРІ РЅСѓР¶РЅРѕ Р±СѓРґРµС‚ РЅР°Р¶РёРјaС‚СЊ B (Р°РЅРіР».).', 'Р—Р°РєСЂС‹С‚СЊ', '', 0)
 			end
 		end end
 		local result, button, list, _ = sampHasDialogRespond(801)
@@ -926,7 +923,7 @@ function dialog()
 					printhelp('msg1', 3)
 				elseif list == 1 or list == 2 then
 					json.msg1[list] = not json.msg1[list]
-					sampShowDialog(671, 'AHelper', '{'..acolor3..'}Информация о команде\t{'..acolor3..'}/msg1\n{'..acolor2..'}/fuelcars\t{'..acolor2..'}'..tostring(json.msg1[1])..'\n{'..acolor2..'}Требование /sduty\t{'..acolor2..'}'..tostring(json.msg1[2]), 'Выбор', 'Закрыть', 4)
+					sampShowDialog(671, 'AHelper', '{'..acolor3..'}РРЅС„РѕСЂРјР°С†РёСЏ Рѕ РєРѕРјР°РЅРґРµ\t{'..acolor3..'}/msg1\n{'..acolor2..'}/fuelcars\t{'..acolor2..'}'..tostring(json.msg1[1])..'\n{'..acolor2..'}РўСЂРµР±РѕРІР°РЅРёРµ /sduty\t{'..acolor2..'}'..tostring(json.msg1[2]), 'Р’С‹Р±РѕСЂ', 'Р—Р°РєСЂС‹С‚СЊ', 4)
 					save()
 				end
 			end
@@ -938,7 +935,7 @@ function dialog()
 					printhelp('msg2', 3)
 				elseif list == 1 or list == 2 then
 					json.msg2[list] = not json.msg2[list]
-					sampShowDialog(672, 'AHelper', '{'..acolor3..'}Информация о команде\t{'..acolor3..'}/msg2\n{'..acolor2..'}/fuelcars\t{'..acolor2..'}'..tostring(json.msg2[1])..'\n{'..acolor2..'}Требование /sduty\t{'..acolor2..'}'..tostring(json.msg2[2]), 'Выбор', 'Закрыть', 4)
+					sampShowDialog(672, 'AHelper', '{'..acolor3..'}РРЅС„РѕСЂРјР°С†РёСЏ Рѕ РєРѕРјР°РЅРґРµ\t{'..acolor3..'}/msg2\n{'..acolor2..'}/fuelcars\t{'..acolor2..'}'..tostring(json.msg2[1])..'\n{'..acolor2..'}РўСЂРµР±РѕРІР°РЅРёРµ /sduty\t{'..acolor2..'}'..tostring(json.msg2[2]), 'Р’С‹Р±РѕСЂ', 'Р—Р°РєСЂС‹С‚СЊ', 4)
 					save()
 				end
 			end
@@ -950,7 +947,7 @@ function dialog()
 					printhelp('msg3', 3)
 				elseif list == 1 or list == 2 then
 					json.msg3[list] = not json.msg3[list]
-					sampShowDialog(673, 'AHelper', '{'..acolor3..'}Информация о команде\t{'..acolor3..'}/msg3\n{'..acolor2..'}/fuelcars\t{'..acolor2..'}'..tostring(json.msg3[1])..'\n{'..acolor2..'}Требование /sduty\t{'..acolor2..'}'..tostring(json.msg3[2]), 'Выбор', 'Закрыть', 4)
+					sampShowDialog(673, 'AHelper', '{'..acolor3..'}РРЅС„РѕСЂРјР°С†РёСЏ Рѕ РєРѕРјР°РЅРґРµ\t{'..acolor3..'}/msg3\n{'..acolor2..'}/fuelcars\t{'..acolor2..'}'..tostring(json.msg3[1])..'\n{'..acolor2..'}РўСЂРµР±РѕРІР°РЅРёРµ /sduty\t{'..acolor2..'}'..tostring(json.msg3[2]), 'Р’С‹Р±РѕСЂ', 'Р—Р°РєСЂС‹С‚СЊ', 4)
 					save()
 				end
 			end
@@ -962,7 +959,7 @@ function dialog()
 					printhelp('msg4', 3)
 				elseif list == 1 or list == 2 then
 					json.msg4[list] = not json.msg4[list]
-					sampShowDialog(674, 'AHelper', '{'..acolor3..'}Информация о команде\t{'..acolor3..'}/msg4\n{'..acolor2..'}/fuelcars\t{'..acolor2..'}'..tostring(json.msg4[1])..'\n{'..acolor2..'}Требование /sduty\t{'..acolor2..'}'..tostring(json.msg4[2]), 'Выбор', 'Закрыть', 4)
+					sampShowDialog(674, 'AHelper', '{'..acolor3..'}РРЅС„РѕСЂРјР°С†РёСЏ Рѕ РєРѕРјР°РЅРґРµ\t{'..acolor3..'}/msg4\n{'..acolor2..'}/fuelcars\t{'..acolor2..'}'..tostring(json.msg4[1])..'\n{'..acolor2..'}РўСЂРµР±РѕРІР°РЅРёРµ /sduty\t{'..acolor2..'}'..tostring(json.msg4[2]), 'Р’С‹Р±РѕСЂ', 'Р—Р°РєСЂС‹С‚СЊ', 4)
 					save()
 				end
 			end
@@ -974,7 +971,7 @@ function dialog()
 					printhelp('msg5', 3)
 				elseif list == 1 or list == 2 then
 					json.msg5[list] = not json.msg5[list]
-					sampShowDialog(675, 'AHelper', '{'..acolor3..'}Информация о команде\t{'..acolor3..'}/msg5\n{'..acolor2..'}/fuelcars\t{'..acolor2..'}'..tostring(json.msg5[1])..'\n{'..acolor2..'}Требование /sduty\t{'..acolor2..'}'..tostring(json.msg5[2]), 'Выбор', 'Закрыть', 4)
+					sampShowDialog(675, 'AHelper', '{'..acolor3..'}РРЅС„РѕСЂРјР°С†РёСЏ Рѕ РєРѕРјР°РЅРґРµ\t{'..acolor3..'}/msg5\n{'..acolor2..'}/fuelcars\t{'..acolor2..'}'..tostring(json.msg5[1])..'\n{'..acolor2..'}РўСЂРµР±РѕРІР°РЅРёРµ /sduty\t{'..acolor2..'}'..tostring(json.msg5[2]), 'Р’С‹Р±РѕСЂ', 'Р—Р°РєСЂС‹С‚СЊ', 4)
 					save()
 				end
 			end
@@ -986,9 +983,9 @@ function dialog()
 					printhelp('msgk', 6)
 				elseif list == 1 or list == 2 then
 					json.msgk[list] = not json.msgk[list]
-					sampShowDialog(676, 'AHelper', '{'..acolor3..'}Информация\t{'..acolor3..'}/msgk\n{'..acolor2..'}/fuelcars\t{'..acolor2..'}'..tostring(json.msgk[1])..'\n{'..acolor2..'}Требование /sduty\t{'..acolor2..'}'..tostring(json.msgk[2])..'\n{'..acolor4..'}Настройки конкурса', 'Выбор', 'Закрыть', 4)
+					sampShowDialog(676, 'AHelper', '{'..acolor3..'}РРЅС„РѕСЂРјР°С†РёСЏ\t{'..acolor3..'}/msgk\n{'..acolor2..'}/fuelcars\t{'..acolor2..'}'..tostring(json.msgk[1])..'\n{'..acolor2..'}РўСЂРµР±РѕРІР°РЅРёРµ /sduty\t{'..acolor2..'}'..tostring(json.msgk[2])..'\n{'..acolor4..'}РќР°СЃС‚СЂРѕР№РєРё РєРѕРЅРєСѓСЂСЃР°', 'Р’С‹Р±РѕСЂ', 'Р—Р°РєСЂС‹С‚СЊ', 4)
 				elseif list == 3 then
-					sampShowDialog(6760, 'AHelper', '{'..acolor4..'}Номер приза\t{'..acolor4..'}Приз\n{'..acolor2..'}Первый приз\t{'..acolor3..'}'..json.msgk[3]..'\n{'..acolor2..'}Второй приз\t{'..acolor3..'}'..json.msgk[4]..'\n{'..acolor2..'}Третий приз\t{'..acolor3..'}'..json.msgk[5]..'\n{'..acolor4..'}Итоговый msg\t{'..acolor4..'}Конкурс в группе (/INFO) на '..json.msgk[3]..', '..json.msgk[4]..', '..json.msgk[5]..'!', 'Выбор', 'Закрыть', 5)
+					sampShowDialog(6760, 'AHelper', '{'..acolor4..'}РќРѕРјРµСЂ РїСЂРёР·Р°\t{'..acolor4..'}РџСЂРёР·\n{'..acolor2..'}РџРµСЂРІС‹Р№ РїСЂРёР·\t{'..acolor3..'}'..json.msgk[3]..'\n{'..acolor2..'}Р’С‚РѕСЂРѕР№ РїСЂРёР·\t{'..acolor3..'}'..json.msgk[4]..'\n{'..acolor2..'}РўСЂРµС‚РёР№ РїСЂРёР·\t{'..acolor3..'}'..json.msgk[5]..'\n{'..acolor4..'}РС‚РѕРіРѕРІС‹Р№ msg\t{'..acolor4..'}РљРѕРЅРєСѓСЂСЃ РІ РіСЂСѓРїРїРµ (/INFO) РЅР° '..json.msgk[3]..', '..json.msgk[4]..', '..json.msgk[5]..'!', 'Р’С‹Р±РѕСЂ', 'Р—Р°РєСЂС‹С‚СЊ', 5)
 				end
 				if list ~= 0 then save() end
 			end
@@ -996,15 +993,15 @@ function dialog()
 		local result, button, list, _ = sampHasDialogRespond(6760)
 		if result then
 			if button == 1 then
-				if list == 0 then sampShowDialog(6761, 'AHelper', '{'..acolor4..'}Если хочешь заблокировать возможность отправлять /msgk, то не вводи сюда ничего.\nВведи текст первого приза:', 'Далее', 'Отмена', 1) elseif list == 1 then sampShowDialog(6762, 'AHelper', '{'..acolor4..'}Если хочешь заблокировать возможность отправлять /msgk, то не вводи сюда ничего.\nВведи текст второго приза:', 'Далее', 'Отмена', 1) elseif list == 2 then sampShowDialog(6763, 'AHelper', '{'..acolor4..'}Если хочешь заблокировать возможность отправлять /msgk, то не вводи сюда ничего.\nВведи текст третьего приза:', 'Далее', 'Отмена', 1) end
+				if list == 0 then sampShowDialog(6761, 'AHelper', '{'..acolor4..'}Р•СЃР»Рё С…РѕС‡РµС€СЊ Р·Р°Р±Р»РѕРєРёСЂРѕРІР°С‚СЊ РІРѕР·РјРѕР¶РЅРѕСЃС‚СЊ РѕС‚РїСЂР°РІР»СЏС‚СЊ /msgk, С‚Рѕ РЅРµ РІРІРѕРґРё СЃСЋРґР° РЅРёС‡РµРіРѕ.\nР’РІРµРґРё С‚РµРєСЃС‚ РїРµСЂРІРѕРіРѕ РїСЂРёР·Р°:', 'Р”Р°Р»РµРµ', 'РћС‚РјРµРЅР°', 1) elseif list == 1 then sampShowDialog(6762, 'AHelper', '{'..acolor4..'}Р•СЃР»Рё С…РѕС‡РµС€СЊ Р·Р°Р±Р»РѕРєРёСЂРѕРІР°С‚СЊ РІРѕР·РјРѕР¶РЅРѕСЃС‚СЊ РѕС‚РїСЂР°РІР»СЏС‚СЊ /msgk, С‚Рѕ РЅРµ РІРІРѕРґРё СЃСЋРґР° РЅРёС‡РµРіРѕ.\nР’РІРµРґРё С‚РµРєСЃС‚ РІС‚РѕСЂРѕРіРѕ РїСЂРёР·Р°:', 'Р”Р°Р»РµРµ', 'РћС‚РјРµРЅР°', 1) elseif list == 2 then sampShowDialog(6763, 'AHelper', '{'..acolor4..'}Р•СЃР»Рё С…РѕС‡РµС€СЊ Р·Р°Р±Р»РѕРєРёСЂРѕРІР°С‚СЊ РІРѕР·РјРѕР¶РЅРѕСЃС‚СЊ РѕС‚РїСЂР°РІР»СЏС‚СЊ /msgk, С‚Рѕ РЅРµ РІРІРѕРґРё СЃСЋРґР° РЅРёС‡РµРіРѕ.\nР’РІРµРґРё С‚РµРєСЃС‚ С‚СЂРµС‚СЊРµРіРѕ РїСЂРёР·Р°:', 'Р”Р°Р»РµРµ', 'РћС‚РјРµРЅР°', 1) end
 			end
 		end
 		local result, button, _, input = sampHasDialogRespond(6761)
 		if result then
 			if button == 1 then
 				json.msgk[3] = input
-				json.msgk[6] = {'/msg Конкурс в группе (/INFO) на '..json.msgk[3]..', '..json.msgk[4]..', '..json.msgk[5]..'!'}
-				sampShowDialog(6760, 'AHelper', '{'..acolor4..'}Номер приза\t{'..acolor4..'}Приз\n{'..acolor2..'}Первый приз\t{'..acolor3..'}'..json.msgk[3]..'\n{'..acolor2..'}Второй приз\t{'..acolor3..'}'..json.msgk[4]..'\n{'..acolor2..'}Третий приз\t{'..acolor3..'}'..json.msgk[5]..'\n{'..acolor4..'}Итоговый msg\t{'..acolor4..'}Конкурс в группе (/INFO) на '..json.msgk[3]..', '..json.msgk[4]..', '..json.msgk[5]..'!', 'Выбор', 'Закрыть', 5)
+				json.msgk[6] = {'/msg РљРѕРЅРєСѓСЂСЃ РІ РіСЂСѓРїРїРµ (/INFO) РЅР° '..json.msgk[3]..', '..json.msgk[4]..', '..json.msgk[5]..'!'}
+				sampShowDialog(6760, 'AHelper', '{'..acolor4..'}РќРѕРјРµСЂ РїСЂРёР·Р°\t{'..acolor4..'}РџСЂРёР·\n{'..acolor2..'}РџРµСЂРІС‹Р№ РїСЂРёР·\t{'..acolor3..'}'..json.msgk[3]..'\n{'..acolor2..'}Р’С‚РѕСЂРѕР№ РїСЂРёР·\t{'..acolor3..'}'..json.msgk[4]..'\n{'..acolor2..'}РўСЂРµС‚РёР№ РїСЂРёР·\t{'..acolor3..'}'..json.msgk[5]..'\n{'..acolor4..'}РС‚РѕРіРѕРІС‹Р№ msg\t{'..acolor4..'}РљРѕРЅРєСѓСЂСЃ РІ РіСЂСѓРїРїРµ (/INFO) РЅР° '..json.msgk[3]..', '..json.msgk[4]..', '..json.msgk[5]..'!', 'Р’С‹Р±РѕСЂ', 'Р—Р°РєСЂС‹С‚СЊ', 5)
 				save()
 			end
 		end
@@ -1012,8 +1009,8 @@ function dialog()
 		if result then
 			if button == 1 then
 				json.msgk[4] = input
-				json.msgk[6] = {'/msg Конкурс в группе (/INFO) на '..json.msgk[3]..', '..json.msgk[4]..', '..json.msgk[5]..'!'}
-				sampShowDialog(6760, 'AHelper', '{'..acolor4..'}Номер приза\t{'..acolor4..'}Приз\n{'..acolor2..'}Первый приз\t{'..acolor3..'}'..json.msgk[3]..'\n{'..acolor2..'}Второй приз\t{'..acolor3..'}'..json.msgk[4]..'\n{'..acolor2..'}Третий приз\t{'..acolor3..'}'..json.msgk[5]..'\n{'..acolor4..'}Итоговый msg\t{'..acolor4..'}Конкурс в группе (/INFO) на '..json.msgk[3]..', '..json.msgk[4]..', '..json.msgk[5]..'!', 'Выбор', 'Закрыть', 5)
+				json.msgk[6] = {'/msg РљРѕРЅРєСѓСЂСЃ РІ РіСЂСѓРїРїРµ (/INFO) РЅР° '..json.msgk[3]..', '..json.msgk[4]..', '..json.msgk[5]..'!'}
+				sampShowDialog(6760, 'AHelper', '{'..acolor4..'}РќРѕРјРµСЂ РїСЂРёР·Р°\t{'..acolor4..'}РџСЂРёР·\n{'..acolor2..'}РџРµСЂРІС‹Р№ РїСЂРёР·\t{'..acolor3..'}'..json.msgk[3]..'\n{'..acolor2..'}Р’С‚РѕСЂРѕР№ РїСЂРёР·\t{'..acolor3..'}'..json.msgk[4]..'\n{'..acolor2..'}РўСЂРµС‚РёР№ РїСЂРёР·\t{'..acolor3..'}'..json.msgk[5]..'\n{'..acolor4..'}РС‚РѕРіРѕРІС‹Р№ msg\t{'..acolor4..'}РљРѕРЅРєСѓСЂСЃ РІ РіСЂСѓРїРїРµ (/INFO) РЅР° '..json.msgk[3]..', '..json.msgk[4]..', '..json.msgk[5]..'!', 'Р’С‹Р±РѕСЂ', 'Р—Р°РєСЂС‹С‚СЊ', 5)
 				save()
 			end
 		end
@@ -1021,8 +1018,8 @@ function dialog()
 		if result then
 			if button == 1 then
 				json.msgk[5] = input
-				json.msgk[6] = {'/msg Конкурс в группе (/INFO) на '..json.msgk[3]..', '..json.msgk[4]..', '..json.msgk[5]..'!'}
-				sampShowDialog(6760, 'AHelper', '{'..acolor4..'}Номер приза\t{'..acolor4..'}Приз\n{'..acolor2..'}Первый приз\t{'..acolor3..'}'..json.msgk[3]..'\n{'..acolor2..'}Второй приз\t{'..acolor3..'}'..json.msgk[4]..'\n{'..acolor2..'}Третий приз\t{'..acolor3..'}'..json.msgk[5]..'\n{'..acolor4..'}Итоговый msg\t{'..acolor4..'}Конкурс в группе (/INFO) на '..json.msgk[3]..', '..json.msgk[4]..', '..json.msgk[5]..'!', 'Выбор', 'Закрыть', 5)
+				json.msgk[6] = {'/msg РљРѕРЅРєСѓСЂСЃ РІ РіСЂСѓРїРїРµ (/INFO) РЅР° '..json.msgk[3]..', '..json.msgk[4]..', '..json.msgk[5]..'!'}
+				sampShowDialog(6760, 'AHelper', '{'..acolor4..'}РќРѕРјРµСЂ РїСЂРёР·Р°\t{'..acolor4..'}РџСЂРёР·\n{'..acolor2..'}РџРµСЂРІС‹Р№ РїСЂРёР·\t{'..acolor3..'}'..json.msgk[3]..'\n{'..acolor2..'}Р’С‚РѕСЂРѕР№ РїСЂРёР·\t{'..acolor3..'}'..json.msgk[4]..'\n{'..acolor2..'}РўСЂРµС‚РёР№ РїСЂРёР·\t{'..acolor3..'}'..json.msgk[5]..'\n{'..acolor4..'}РС‚РѕРіРѕРІС‹Р№ msg\t{'..acolor4..'}РљРѕРЅРєСѓСЂСЃ РІ РіСЂСѓРїРїРµ (/INFO) РЅР° '..json.msgk[3]..', '..json.msgk[4]..', '..json.msgk[5]..'!', 'Р’С‹Р±РѕСЂ', 'Р—Р°РєСЂС‹С‚СЊ', 5)
 				save()
 			end
 		end
@@ -1030,13 +1027,13 @@ function dialog()
 		if result then
 			if button == 1 then
 				if list == 0 then
-					sampShowDialog(6770, 'AHelper', '{'..acolor3..'}Быстрая выдача мута\n{'..acolor2..'}Если в антирекламу попадает сообщение с У.Р., то у Вас есть 10 секунд на то, чтобы нажать кнопку M.\n{'..acolor2..'}Тогда скрипт автоматически выдаст мут тому, кто отправил сообщение, попавшее в антирекламу.', 'Закрыть', '', 0)
+					sampShowDialog(6770, 'AHelper', '{'..acolor3..'}Р‘С‹СЃС‚СЂР°СЏ РІС‹РґР°С‡Р° РјСѓС‚Р°\n{'..acolor2..'}Р•СЃР»Рё РІ Р°РЅС‚РёСЂРµРєР»Р°РјСѓ РїРѕРїР°РґР°РµС‚ СЃРѕРѕР±С‰РµРЅРёРµ СЃ РЈ.Р ., С‚Рѕ Сѓ Р’Р°СЃ РµСЃС‚СЊ 10 СЃРµРєСѓРЅРґ РЅР° С‚Рѕ, С‡С‚РѕР±С‹ РЅР°Р¶Р°С‚СЊ РєРЅРѕРїРєСѓ M.\n{'..acolor2..'}РўРѕРіРґР° СЃРєСЂРёРїС‚ Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё РІС‹РґР°СЃС‚ РјСѓС‚ С‚РѕРјСѓ, РєС‚Рѕ РѕС‚РїСЂР°РІРёР» СЃРѕРѕР±С‰РµРЅРёРµ, РїРѕРїР°РІС€РµРµ РІ Р°РЅС‚РёСЂРµРєР»Р°РјСѓ.', 'Р—Р°РєСЂС‹С‚СЊ', '', 0)
 				elseif list == 1 then
 					json.amute = not json.amute
 					if json.amute then
-						sampShowDialog(677, 'AHelper', '{'..acolor3..'}Информация\t{'..acolor3..'}Быстрая выдача мута\n{'..acolor2..'}Состояние\t{'..acolor2..'}Включено', 'Выбор', 'Закрыть', 4)
+						sampShowDialog(677, 'AHelper', '{'..acolor3..'}РРЅС„РѕСЂРјР°С†РёСЏ\t{'..acolor3..'}Р‘С‹СЃС‚СЂР°СЏ РІС‹РґР°С‡Р° РјСѓС‚Р°\n{'..acolor2..'}РЎРѕСЃС‚РѕСЏРЅРёРµ\t{'..acolor2..'}Р’РєР»СЋС‡РµРЅРѕ', 'Р’С‹Р±РѕСЂ', 'Р—Р°РєСЂС‹С‚СЊ', 4)
 					elseif json.amute == false then
-						sampShowDialog(677, 'AHelper', '{'..acolor3..'}Информация\t{'..acolor3..'}Быстрая выдача мута\n{'..acolor2..'}Состояние\t{'..acolor2..'}Выключено', 'Выбор', 'Закрыть', 4)
+						sampShowDialog(677, 'AHelper', '{'..acolor3..'}РРЅС„РѕСЂРјР°С†РёСЏ\t{'..acolor3..'}Р‘С‹СЃС‚СЂР°СЏ РІС‹РґР°С‡Р° РјСѓС‚Р°\n{'..acolor2..'}РЎРѕСЃС‚РѕСЏРЅРёРµ\t{'..acolor2..'}Р’С‹РєР»СЋС‡РµРЅРѕ', 'Р’С‹Р±РѕСЂ', 'Р—Р°РєСЂС‹С‚СЊ', 4)
 					end
 					save()
 				end
@@ -1046,7 +1043,7 @@ function dialog()
 		if result then
 			if button == 1 then
 				if list == 0 then
-					sampShowDialog(670, 'AHelper', '{'..acolor3..'}Быстрый ответ на репорт\n{'..acolor2..'}Когда появится репорт с текстом "sp", "сп" и т.д., у Вас будет 5 секунд на то, чтобы нажать на кнопку X. \n{'..acolor2..'}Тогда скрипт автоматически ответит на репорт и отправит отправителя репорта на спавн.\n{'..acolor3..'}Если опция "Удаление сообщения" включена, то скрипт автоматически удалит сообщение репорта из чата и чатлога (!).\n{'..acolor3..'}Если опция "Отвечать только первым" включена, то скрипт не даст ответить, если на репорт уже ответил другой администратор.', 'Закрыть', '', 0)
+					sampShowDialog(670, 'AHelper', '{'..acolor3..'}Р‘С‹СЃС‚СЂС‹Р№ РѕС‚РІРµС‚ РЅР° СЂРµРїРѕСЂС‚\n{'..acolor2..'}РљРѕРіРґР° РїРѕСЏРІРёС‚СЃСЏ СЂРµРїРѕСЂС‚ СЃ С‚РµРєСЃС‚РѕРј "sp", "СЃРї" Рё С‚.Рґ., Сѓ Р’Р°СЃ Р±СѓРґРµС‚ 5 СЃРµРєСѓРЅРґ РЅР° С‚Рѕ, С‡С‚РѕР±С‹ РЅР°Р¶Р°С‚СЊ РЅР° РєРЅРѕРїРєСѓ X. \n{'..acolor2..'}РўРѕРіРґР° СЃРєСЂРёРїС‚ Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё РѕС‚РІРµС‚РёС‚ РЅР° СЂРµРїРѕСЂС‚ Рё РѕС‚РїСЂР°РІРёС‚ РѕС‚РїСЂР°РІРёС‚РµР»СЏ СЂРµРїРѕСЂС‚Р° РЅР° СЃРїР°РІРЅ.\n{'..acolor3..'}Р•СЃР»Рё РѕРїС†РёСЏ "РЈРґР°Р»РµРЅРёРµ СЃРѕРѕР±С‰РµРЅРёСЏ" РІРєР»СЋС‡РµРЅР°, С‚Рѕ СЃРєСЂРёРїС‚ Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё СѓРґР°Р»РёС‚ СЃРѕРѕР±С‰РµРЅРёРµ СЂРµРїРѕСЂС‚Р° РёР· С‡Р°С‚Р° Рё С‡Р°С‚Р»РѕРіР° (!).\n{'..acolor3..'}Р•СЃР»Рё РѕРїС†РёСЏ "РћС‚РІРµС‡Р°С‚СЊ С‚РѕР»СЊРєРѕ РїРµСЂРІС‹Рј" РІРєР»СЋС‡РµРЅР°, С‚Рѕ СЃРєСЂРёРїС‚ РЅРµ РґР°СЃС‚ РѕС‚РІРµС‚РёС‚СЊ, РµСЃР»Рё РЅР° СЂРµРїРѕСЂС‚ СѓР¶Рµ РѕС‚РІРµС‚РёР» РґСЂСѓРіРѕР№ Р°РґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂ.', 'Р—Р°РєСЂС‹С‚СЊ', '', 0)
 				elseif list >= 1 and list <= #json.autorep then
 					json.autorep[list] = not json.autorep[list]
 					save()
@@ -1058,13 +1055,13 @@ function dialog()
 		if result then
 			if button == 1 then
 				if list == 0 then
-					sampShowDialog(670, 'AHelper', '{'..acolor3..'}Анти-изнасилование\n{'..acolor2..'}Если тебя изнасилуют, ты (почти) сразу изнасилуешь этого игрока.\n{'..acolor2..'}Примечание: если игрок напишет "/me изнасиловал Nick_Name", где Nick_Name - твой ник, то ты тоже изнасилуешь этого игрока.\n{'..acolor2..'}Это не исправляется.', 'Закрыть', '', 0)
+					sampShowDialog(670, 'AHelper', '{'..acolor3..'}РђРЅС‚Рё-РёР·РЅР°СЃРёР»РѕРІР°РЅРёРµ\n{'..acolor2..'}Р•СЃР»Рё С‚РµР±СЏ РёР·РЅР°СЃРёР»СѓСЋС‚, С‚С‹ (РїРѕС‡С‚Рё) СЃСЂР°Р·Сѓ РёР·РЅР°СЃРёР»СѓРµС€СЊ СЌС‚РѕРіРѕ РёРіСЂРѕРєР°.\n{'..acolor2..'}РџСЂРёРјРµС‡Р°РЅРёРµ: РµСЃР»Рё РёРіСЂРѕРє РЅР°РїРёС€РµС‚ "/me РёР·РЅР°СЃРёР»РѕРІР°Р» Nick_Name", РіРґРµ Nick_Name - С‚РІРѕР№ РЅРёРє, С‚Рѕ С‚С‹ С‚РѕР¶Рµ РёР·РЅР°СЃРёР»СѓРµС€СЊ СЌС‚РѕРіРѕ РёРіСЂРѕРєР°.\n{'..acolor2..'}Р­С‚Рѕ РЅРµ РёСЃРїСЂР°РІР»СЏРµС‚СЃСЏ.', 'Р—Р°РєСЂС‹С‚СЊ', '', 0)
 				elseif list == 1 then
 					json.iznas = not json.iznas
 					if json.iznas then
-						sampShowDialog(679, 'AHelper', '{'..acolor3..'}Информация\t{'..acolor2..'}Анти-изнасилование\n{'..acolor3..'}Состояние\t{'..acolor2..'}Включено', 'Выбор', 'Закрыть', 4)
+						sampShowDialog(679, 'AHelper', '{'..acolor3..'}РРЅС„РѕСЂРјР°С†РёСЏ\t{'..acolor2..'}РђРЅС‚Рё-РёР·РЅР°СЃРёР»РѕРІР°РЅРёРµ\n{'..acolor3..'}РЎРѕСЃС‚РѕСЏРЅРёРµ\t{'..acolor2..'}Р’РєР»СЋС‡РµРЅРѕ', 'Р’С‹Р±РѕСЂ', 'Р—Р°РєСЂС‹С‚СЊ', 4)
 					elseif json.iznas == false then
-						sampShowDialog(679, 'AHelper', '{'..acolor3..'}Информация\t{'..acolor2..'}Анти-изнасилование\n{'..acolor3..'}Состояние\t{'..acolor2..'}Выключено', 'Выбор', 'Закрыть', 4)
+						sampShowDialog(679, 'AHelper', '{'..acolor3..'}РРЅС„РѕСЂРјР°С†РёСЏ\t{'..acolor2..'}РђРЅС‚Рё-РёР·РЅР°СЃРёР»РѕРІР°РЅРёРµ\n{'..acolor3..'}РЎРѕСЃС‚РѕСЏРЅРёРµ\t{'..acolor2..'}Р’С‹РєР»СЋС‡РµРЅРѕ', 'Р’С‹Р±РѕСЂ', 'Р—Р°РєСЂС‹С‚СЊ', 4)
 					end
 				end
 			end
@@ -1076,15 +1073,15 @@ function ccomand(param1, param2, list, num)
 		printhelp(param1, param2)
 	elseif list == 1 or list == 2 then
 		json[param1][list] = not json[param1][list]
-		sampShowDialog(800+num, 'AHelper', '{'..acolor3..'}Информация\t{'..acolor3..'}/'..param1..'\n{'..acolor2..'}/fuelcars\t{'..acolor2..'}'..tostring(json[param1][1])..'\n{'..acolor2..'}Требование /sduty\t{'..acolor2..'}'..tostring(json[param1][2])..'\n{'..acolor4..'}Добавить строку\n{'..acolor4..'}Очистить\t{'..acolor4..'}'..tostring(#json[param1][param2])..' стр.', 'Выбор', 'Закрыть', 4)
+		sampShowDialog(800+num, 'AHelper', '{'..acolor3..'}РРЅС„РѕСЂРјР°С†РёСЏ\t{'..acolor3..'}/'..param1..'\n{'..acolor2..'}/fuelcars\t{'..acolor2..'}'..tostring(json[param1][1])..'\n{'..acolor2..'}РўСЂРµР±РѕРІР°РЅРёРµ /sduty\t{'..acolor2..'}'..tostring(json[param1][2])..'\n{'..acolor4..'}Р”РѕР±Р°РІРёС‚СЊ СЃС‚СЂРѕРєСѓ\n{'..acolor4..'}РћС‡РёСЃС‚РёС‚СЊ\t{'..acolor4..'}'..tostring(#json[param1][param2])..' СЃС‚СЂ.', 'Р’С‹Р±РѕСЂ', 'Р—Р°РєСЂС‹С‚СЊ', 4)
 		save()
 	elseif list == 3 then
 		if #json[param1][param2+1] < #json[param1][param2] then kd = true else kd = false end
-		if kd then sampShowDialog((800+num)*10+1, 'AHelper', '{'..acolor3..'}/'..param1..'\n{'..acolor2..'}Введи задержку перед отправкой следующего сообщения в миллисекундах (1,5 секунд = 1500 миллисекунд).\n{'..acolor4..'}Если это последнее сообщение, то задержкка не повлияет ни на что.', 'Далее', 'Отмена', 1) else sampShowDialog((800+num)*10, 'AHelper', '{'..acolor3..'}/'..param1..'\n{'..acolor2..'}Введи сообщение, которое будет отправлятся.', 'Далее', 'Отмена', 1) end
+		if kd then sampShowDialog((800+num)*10+1, 'AHelper', '{'..acolor3..'}/'..param1..'\n{'..acolor2..'}Р’РІРµРґРё Р·Р°РґРµСЂР¶РєСѓ РїРµСЂРµРґ РѕС‚РїСЂР°РІРєРѕР№ СЃР»РµРґСѓСЋС‰РµРіРѕ СЃРѕРѕР±С‰РµРЅРёСЏ РІ РјРёР»Р»РёСЃРµРєСѓРЅРґР°С… (1,5 СЃРµРєСѓРЅРґ = 1500 РјРёР»Р»РёСЃРµРєСѓРЅРґ).\n{'..acolor4..'}Р•СЃР»Рё СЌС‚Рѕ РїРѕСЃР»РµРґРЅРµРµ СЃРѕРѕР±С‰РµРЅРёРµ, С‚Рѕ Р·Р°РґРµСЂР¶РєРєР° РЅРµ РїРѕРІР»РёСЏРµС‚ РЅРё РЅР° С‡С‚Рѕ.', 'Р”Р°Р»РµРµ', 'РћС‚РјРµРЅР°', 1) else sampShowDialog((800+num)*10, 'AHelper', '{'..acolor3..'}/'..param1..'\n{'..acolor2..'}Р’РІРµРґРё СЃРѕРѕР±С‰РµРЅРёРµ, РєРѕС‚РѕСЂРѕРµ Р±СѓРґРµС‚ РѕС‚РїСЂР°РІР»СЏС‚СЃСЏ.', 'Р”Р°Р»РµРµ', 'РћС‚РјРµРЅР°', 1) end
 	elseif list == 4 then
 		json[param1][param2] = {}
 		json[param1][param2+1] = {}
-		sampShowDialog(a, 'AHelper', '{'..acolor3..'}Информация\t{'..acolor3..'}/'..param1..'\n{'..acolor2..'}/fuelcars\t{'..acolor2..'}'..tostring(json[param1][1])..'\n{'..acolor2..'}Требование /sduty\t{'..acolor2..'}'..tostring(json[param1][2])..'\n{'..acolor4..'}Добавить строку\n{'..acolor4..'}Очистить\t{'..acolor4..'}'..tostring(#json[param1][param2])..' стр.', 'Выбор', 'Закрыть', 4)
+		sampShowDialog(800+num, 'AHelper', '{'..acolor3..'}РРЅС„РѕСЂРјР°С†РёСЏ\t{'..acolor3..'}/'..param1..'\n{'..acolor2..'}/fuelcars\t{'..acolor2..'}'..tostring(json[param1][1])..'\n{'..acolor2..'}РўСЂРµР±РѕРІР°РЅРёРµ /sduty\t{'..acolor2..'}'..tostring(json[param1][2])..'\n{'..acolor4..'}Р”РѕР±Р°РІРёС‚СЊ СЃС‚СЂРѕРєСѓ\n{'..acolor4..'}РћС‡РёСЃС‚РёС‚СЊ\t{'..acolor4..'}'..tostring(#json[param1][param2])..' СЃС‚СЂ.', 'Р’С‹Р±РѕСЂ', 'Р—Р°РєСЂС‹С‚СЊ', 4)
 		save()
 	end
 end
@@ -1094,7 +1091,7 @@ function cinput(param1, param2, button, input, num)
 			if #input > 0 then
 				json[param1][param2][#json[param1][param2]+1] = input
 			else
-				sampAddChatMessage('AHelper: ты не ввёл текст!', color1)
+				sampAddChatMessage('AHelper: С‚С‹ РЅРµ РІРІС‘Р» С‚РµРєСЃС‚!', color1)
 			end
 		else
 			if #input > 0 then
@@ -1102,24 +1099,24 @@ function cinput(param1, param2, button, input, num)
 					if tonumber(input:match('^(%d+)')) > 500 and tonumber(input:match('^(%d+)')) < 60001 then
 						json[param1][param2+1][#json[param1][param2+1]+1] = input:match('^(%d+)')
 					else
-						sampAddChatMessage('AHelper: минимум 500 и максимум 60001!', color1)
+						sampAddChatMessage('AHelper: РјРёРЅРёРјСѓРј 500 Рё РјР°РєСЃРёРјСѓРј 60001!', color1)
 					end
 				else
-					sampAddChatMessage('AHelper: ты не ввёл задержку!', color1)
+					sampAddChatMessage('AHelper: С‚С‹ РЅРµ РІРІС‘Р» Р·Р°РґРµСЂР¶РєСѓ!', color1)
 				end
 			else
-				sampAddChatMessage('AHelper: ты не ввёл задержку!', color1)
+				sampAddChatMessage('AHelper: С‚С‹ РЅРµ РІРІС‘Р» Р·Р°РґРµСЂР¶РєСѓ!', color1)
 			end
 		end
 		if #json[param1][param2+1] < #json[param1][param2] then kd = true else kd = false end
 		if kd then
-			sampShowDialog((800+num)*10+1, 'AHelper', '{'..acolor3..'}/'..param1..'\n{'..acolor2..'}Введи задержку перед отправкой следующего сообщения.\n{'..acolor4..'}Если это последнее сообщение, то задержкка не повлияет ни на что.', 'Далее', 'Отмена', 1)
+			sampShowDialog((800+num)*10+1, 'AHelper', '{'..acolor3..'}/'..param1..'\n{'..acolor2..'}Р’РІРµРґРё Р·Р°РґРµСЂР¶РєСѓ РїРµСЂРµРґ РѕС‚РїСЂР°РІРєРѕР№ СЃР»РµРґСѓСЋС‰РµРіРѕ СЃРѕРѕР±С‰РµРЅРёСЏ.\n{'..acolor4..'}Р•СЃР»Рё СЌС‚Рѕ РїРѕСЃР»РµРґРЅРµРµ СЃРѕРѕР±С‰РµРЅРёРµ, С‚Рѕ Р·Р°РґРµСЂР¶РєРєР° РЅРµ РїРѕРІР»РёСЏРµС‚ РЅРё РЅР° С‡С‚Рѕ.', 'Р”Р°Р»РµРµ', 'РћС‚РјРµРЅР°', 1)
 		else
-			sampShowDialog(800+num, 'AHelper', '{'..acolor3..'}Информация\t{'..acolor3..'}/'..param1..'\n{'..acolor2..'}/fuelcars\t{'..acolor2..'}'..tostring(json[param1][1])..'\n{'..acolor2..'}Требование /sduty\t{'..acolor2..'}'..tostring(json[param1][2])..'\n{'..acolor4..'}Добавить строку\n{'..acolor4..'}Очистить\t{'..acolor4..'}'..tostring(#json[param1][param2])..' стр.', 'Выбор', 'Закрыть', 4)
+			sampShowDialog(800+num, 'AHelper', '{'..acolor3..'}РРЅС„РѕСЂРјР°С†РёСЏ\t{'..acolor3..'}/'..param1..'\n{'..acolor2..'}/fuelcars\t{'..acolor2..'}'..tostring(json[param1][1])..'\n{'..acolor2..'}РўСЂРµР±РѕРІР°РЅРёРµ /sduty\t{'..acolor2..'}'..tostring(json[param1][2])..'\n{'..acolor4..'}Р”РѕР±Р°РІРёС‚СЊ СЃС‚СЂРѕРєСѓ\n{'..acolor4..'}РћС‡РёСЃС‚РёС‚СЊ\t{'..acolor4..'}'..tostring(#json[param1][param2])..' СЃС‚СЂ.', 'Р’С‹Р±РѕСЂ', 'Р—Р°РєСЂС‹С‚СЊ', 4)
 		end
 		save()
 	else
-		sampShowDialog(800+num, 'AHelper', '{'..acolor3..'}Информация\t{'..acolor3..'}/'..param1..'\n{'..acolor2..'}/fuelcars\t{'..acolor2..'}'..tostring(json[param1][1])..'\n{'..acolor2..'}Требование /sduty\t{'..acolor2..'}'..tostring(json[param1][2])..'\n{'..acolor4..'}Добавить строку\n{'..acolor4..'}Очистить\t{'..acolor4..'}'..tostring(#json[param1][param2])..' стр.', 'Выбор', 'Закрыть', 4)
+		sampShowDialog(800+num, 'AHelper', '{'..acolor3..'}РРЅС„РѕСЂРјР°С†РёСЏ\t{'..acolor3..'}/'..param1..'\n{'..acolor2..'}/fuelcars\t{'..acolor2..'}'..tostring(json[param1][1])..'\n{'..acolor2..'}РўСЂРµР±РѕРІР°РЅРёРµ /sduty\t{'..acolor2..'}'..tostring(json[param1][2])..'\n{'..acolor4..'}Р”РѕР±Р°РІРёС‚СЊ СЃС‚СЂРѕРєСѓ\n{'..acolor4..'}РћС‡РёСЃС‚РёС‚СЊ\t{'..acolor4..'}'..tostring(#json[param1][param2])..' СЃС‚СЂ.', 'Р’С‹Р±РѕСЂ', 'Р—Р°РєСЂС‹С‚СЊ', 4)
 	end
 end
 function printhelp(param1, param2)
@@ -1131,7 +1128,7 @@ function printhelp(param1, param2)
 				if json[param1][3] ~= '' and json[param1][4] ~= '' and json[param1][5] ~= '' then
 					sampAddChatMessage(v, color1)
 				else
-					sampAddChatMessage('Укажи призы!', color1)
+					sampAddChatMessage('РЈРєР°Р¶Рё РїСЂРёР·С‹!', color1)
 				end
 			end
 		end
@@ -1145,35 +1142,35 @@ function printhelp(param1, param2)
 	else
 		local temp = {}
 		if #json[param1][param2] > 1 and #json[param1][param2] < 11 then
-			if param1 ~= 'msgk' then for i, v in ipairs(json[param1][param2]) do temp[#temp+1] = v end else temp[#temp+1] = string.format('/msg Конкурс в группе (/INFO) на %s, %s, %s!', json[param1][param2-3], json[param1][param2-2], json[param1][param2-1]) end
+			if param1 ~= 'msgk' then for i, v in ipairs(json[param1][param2]) do temp[#temp+1] = v end else temp[#temp+1] = string.format('/msg РљРѕРЅРєСѓСЂСЃ РІ РіСЂСѓРїРїРµ (/INFO) РЅР° %s, %s, %s!', json[param1][param2-3], json[param1][param2-2], json[param1][param2-1]) end
 			if #temp == 2 then
-				sampShowDialog(670, 'AHelper', '{'..acolor3..'}При /'..param1..' будет введён данный текст:\n{'..acolor2..'}'..temp[1]..'\n{'..acolor2..'}'..temp[2], 'Закрыть', '', 0)
+				sampShowDialog(670, 'AHelper', '{'..acolor3..'}РџСЂРё /'..param1..' Р±СѓРґРµС‚ РІРІРµРґС‘РЅ РґР°РЅРЅС‹Р№ С‚РµРєСЃС‚:\n{'..acolor2..'}'..temp[1]..'\n{'..acolor2..'}'..temp[2], 'Р—Р°РєСЂС‹С‚СЊ', '', 0)
 			elseif #temp == 3 then
-				sampShowDialog(670, 'AHelper', '{'..acolor3..'}При /'..param1..' будет введён данный текст:\n{'..acolor2..'}'..temp[1]..'\n{'..acolor2..'}'..temp[2]..'\n{'..acolor2..'}'..temp[3], 'Закрыть', '', 0)
+				sampShowDialog(670, 'AHelper', '{'..acolor3..'}РџСЂРё /'..param1..' Р±СѓРґРµС‚ РІРІРµРґС‘РЅ РґР°РЅРЅС‹Р№ С‚РµРєСЃС‚:\n{'..acolor2..'}'..temp[1]..'\n{'..acolor2..'}'..temp[2]..'\n{'..acolor2..'}'..temp[3], 'Р—Р°РєСЂС‹С‚СЊ', '', 0)
 			elseif #temp == 4 then
-				sampShowDialog(670, 'AHelper', '{'..acolor3..'}При /'..param1..' будет введён данный текст:\n{'..acolor2..'}'..temp[1]..'\n{'..acolor2..'}'..temp[2]..'\n{'..acolor2..'}'..temp[3]..'\n{'..acolor2..'}'..temp[4], 'Закрыть', '', 0)
+				sampShowDialog(670, 'AHelper', '{'..acolor3..'}РџСЂРё /'..param1..' Р±СѓРґРµС‚ РІРІРµРґС‘РЅ РґР°РЅРЅС‹Р№ С‚РµРєСЃС‚:\n{'..acolor2..'}'..temp[1]..'\n{'..acolor2..'}'..temp[2]..'\n{'..acolor2..'}'..temp[3]..'\n{'..acolor2..'}'..temp[4], 'Р—Р°РєСЂС‹С‚СЊ', '', 0)
 			elseif #temp == 5 then
-				sampShowDialog(670, 'AHelper', '{'..acolor3..'}При /'..param1..' будет введён данный текст:\n{'..acolor2..'}'..temp[1]..'\n{'..acolor2..'}'..temp[2]..'\n{'..acolor2..'}'..temp[3]..'\n{'..acolor2..'}'..temp[4]..'\n{'..acolor2..'}'..temp[5], 'Закрыть', '', 0)
+				sampShowDialog(670, 'AHelper', '{'..acolor3..'}РџСЂРё /'..param1..' Р±СѓРґРµС‚ РІРІРµРґС‘РЅ РґР°РЅРЅС‹Р№ С‚РµРєСЃС‚:\n{'..acolor2..'}'..temp[1]..'\n{'..acolor2..'}'..temp[2]..'\n{'..acolor2..'}'..temp[3]..'\n{'..acolor2..'}'..temp[4]..'\n{'..acolor2..'}'..temp[5], 'Р—Р°РєСЂС‹С‚СЊ', '', 0)
 			elseif #temp == 6 then
-				sampShowDialog(670, 'AHelper', '{'..acolor3..'}При /'..param1..' будет введён данный текст:\n{'..acolor2..'}'..temp[1]..'\n{'..acolor2..'}'..temp[2]..'\n{'..acolor2..'}'..temp[3]..'\n{'..acolor2..'}'..temp[4]..'\n{'..acolor2..'}'..temp[5]..'\n{'..acolor2..'}'..temp[6], 'Закрыть', '', 0)
+				sampShowDialog(670, 'AHelper', '{'..acolor3..'}РџСЂРё /'..param1..' Р±СѓРґРµС‚ РІРІРµРґС‘РЅ РґР°РЅРЅС‹Р№ С‚РµРєСЃС‚:\n{'..acolor2..'}'..temp[1]..'\n{'..acolor2..'}'..temp[2]..'\n{'..acolor2..'}'..temp[3]..'\n{'..acolor2..'}'..temp[4]..'\n{'..acolor2..'}'..temp[5]..'\n{'..acolor2..'}'..temp[6], 'Р—Р°РєСЂС‹С‚СЊ', '', 0)
 			elseif #temp == 7 then
-				sampShowDialog(670, 'AHelper', '{'..acolor3..'}При /'..param1..' будет введён данный текст:\n{'..acolor2..'}'..temp[1]..'\n{'..acolor2..'}'..temp[2]..'\n{'..acolor2..'}'..temp[3]..'\n{'..acolor2..'}'..temp[4]..'\n{'..acolor2..'}'..temp[5]..'\n{'..acolor2..'}'..temp[6]..'\n{'..acolor2..'}'..temp[7], 'Закрыть', '', 0)
+				sampShowDialog(670, 'AHelper', '{'..acolor3..'}РџСЂРё /'..param1..' Р±СѓРґРµС‚ РІРІРµРґС‘РЅ РґР°РЅРЅС‹Р№ С‚РµРєСЃС‚:\n{'..acolor2..'}'..temp[1]..'\n{'..acolor2..'}'..temp[2]..'\n{'..acolor2..'}'..temp[3]..'\n{'..acolor2..'}'..temp[4]..'\n{'..acolor2..'}'..temp[5]..'\n{'..acolor2..'}'..temp[6]..'\n{'..acolor2..'}'..temp[7], 'Р—Р°РєСЂС‹С‚СЊ', '', 0)
 			elseif #temp == 8 then
-				sampShowDialog(670, 'AHelper', '{'..acolor3..'}При /'..param1..' будет введён данный текст:\n{'..acolor2..'}'..temp[1]..'\n{'..acolor2..'}'..temp[2]..'\n{'..acolor2..'}'..temp[3]..'\n{'..acolor2..'}'..temp[4]..'\n{'..acolor2..'}'..temp[5]..'\n{'..acolor2..'}'..temp[6]..'\n{'..acolor2..'}'..temp[7]..'\n{'..acolor2..'}'..temp[8], 'Закрыть', '', 0)
+				sampShowDialog(670, 'AHelper', '{'..acolor3..'}РџСЂРё /'..param1..' Р±СѓРґРµС‚ РІРІРµРґС‘РЅ РґР°РЅРЅС‹Р№ С‚РµРєСЃС‚:\n{'..acolor2..'}'..temp[1]..'\n{'..acolor2..'}'..temp[2]..'\n{'..acolor2..'}'..temp[3]..'\n{'..acolor2..'}'..temp[4]..'\n{'..acolor2..'}'..temp[5]..'\n{'..acolor2..'}'..temp[6]..'\n{'..acolor2..'}'..temp[7]..'\n{'..acolor2..'}'..temp[8], 'Р—Р°РєСЂС‹С‚СЊ', '', 0)
 			elseif #temp == 9 then
-				sampShowDialog(670, 'AHelper', '{'..acolor3..'}При /'..param1..' будет введён данный текст:\n{'..acolor2..'}'..temp[1]..'\n{'..acolor2..'}'..temp[2]..'\n{'..acolor2..'}'..temp[3]..'\n{'..acolor2..'}'..temp[4]..'\n{'..acolor2..'}'..temp[5]..'\n{'..acolor2..'}'..temp[6]..'\n{'..acolor2..'}'..temp[7]..'\n{'..acolor2..'}'..temp[8]'\n{'..acolor2..'}'..temp[9], 'Закрыть', '', 0)
+				sampShowDialog(670, 'AHelper', '{'..acolor3..'}РџСЂРё /'..param1..' Р±СѓРґРµС‚ РІРІРµРґС‘РЅ РґР°РЅРЅС‹Р№ С‚РµРєСЃС‚:\n{'..acolor2..'}'..temp[1]..'\n{'..acolor2..'}'..temp[2]..'\n{'..acolor2..'}'..temp[3]..'\n{'..acolor2..'}'..temp[4]..'\n{'..acolor2..'}'..temp[5]..'\n{'..acolor2..'}'..temp[6]..'\n{'..acolor2..'}'..temp[7]..'\n{'..acolor2..'}'..temp[8]'\n{'..acolor2..'}'..temp[9], 'Р—Р°РєСЂС‹С‚СЊ', '', 0)
 			elseif #temp == 10 then
-				sampShowDialog(670, 'AHelper', '{'..acolor3..'}При /'..param1..' будет введён данный текст:\n{'..acolor2..'}'..temp[1]..'\n{'..acolor2..'}'..temp[2]..'\n{'..acolor2..'}'..temp[3]..'\n{'..acolor2..'}'..temp[4]..'\n{'..acolor2..'}'..temp[5]..'\n{'..acolor2..'}'..temp[6]..'\n{'..acolor2..'}'..temp[7]..'\n{'..acolor2..'}'..temp[8]'\n{'..acolor2..'}'..temp[9]..'\n{'..acolor2..'}'..temp[10], 'Закрыть', '', 0)
+				sampShowDialog(670, 'AHelper', '{'..acolor3..'}РџСЂРё /'..param1..' Р±СѓРґРµС‚ РІРІРµРґС‘РЅ РґР°РЅРЅС‹Р№ С‚РµРєСЃС‚:\n{'..acolor2..'}'..temp[1]..'\n{'..acolor2..'}'..temp[2]..'\n{'..acolor2..'}'..temp[3]..'\n{'..acolor2..'}'..temp[4]..'\n{'..acolor2..'}'..temp[5]..'\n{'..acolor2..'}'..temp[6]..'\n{'..acolor2..'}'..temp[7]..'\n{'..acolor2..'}'..temp[8]'\n{'..acolor2..'}'..temp[9]..'\n{'..acolor2..'}'..temp[10], 'Р—Р°РєСЂС‹С‚СЊ', '', 0)
 			end
 		elseif #json[param1][param2] == 1 then
 			local v = ''
 			if param1 ~= 'msg6' then
 				v = json[param1][param2][#json[param1][param2]]
 			else
-				v = string.format('/msg Конкурс в группе (/INFO) на %s, %s, %s!', json[param1][param2-3], json[param1][param2-2], json[param1][param2-1])
+				v = string.format('/msg РљРѕРЅРєСѓСЂСЃ РІ РіСЂСѓРїРїРµ (/INFO) РЅР° %s, %s, %s!', json[param1][param2-3], json[param1][param2-2], json[param1][param2-1])
 			end
-			if json[param1][1] and json[param1][2] then sampShowDialog(670, 'AHelper', '{'..acolor3..'}При /'..param1..' будет введён данный текст:\n{'..acolor2..'}'..v..'\n{'..acolor2..'}/fuelcars\n{'..acolor2..'}/asc /sduty /sduty /sduty /sduty /sduty\n{'..acolor2..'}/sduty', 'Закрыть', '', 0) elseif json[param1][1] and not json[param1][2] then sampShowDialog(670, 'AHelper', '{'..acolor3..'}При /'..param1..' будет введён данный текст:\n{'..acolor2..'}'..v..'\n{'..acolor2..'}/fuelcars', 'Закрыть', '', 0) elseif not json[param1][1] and json[param1][2] then sampShowDialog(670, 'AHelper', '{'..acolor3..'}При /'..param1..' будет введён данный текст:\n{'..acolor2..'}'..v..'\n{'..acolor2..'}/asc /sduty /sduty /sduty /sduty /sduty\n{'..acolor2..'}/sduty', 'Закрыть', '', 0) else sampShowDialog(670, 'AHelper', '{'..acolor3..'}При /'..param1..' будет введён данный текст:\n{'..acolor2..'}'..v, 'Закрыть', '', 0) end
-		else sampShowDialog(670, 'AHelper', '{'..acolor3..'}Error: количество строк поддерживается только от 1 до 10. Иначе не работает.', 'Закрыть', '', 0)
+			if json[param1][1] and json[param1][2] then sampShowDialog(670, 'AHelper', '{'..acolor3..'}РџСЂРё /'..param1..' Р±СѓРґРµС‚ РІРІРµРґС‘РЅ РґР°РЅРЅС‹Р№ С‚РµРєСЃС‚:\n{'..acolor2..'}'..v..'\n{'..acolor2..'}/fuelcars\n{'..acolor2..'}/asc /sduty /sduty /sduty /sduty /sduty\n{'..acolor2..'}/sduty', 'Р—Р°РєСЂС‹С‚СЊ', '', 0) elseif json[param1][1] and not json[param1][2] then sampShowDialog(670, 'AHelper', '{'..acolor3..'}РџСЂРё /'..param1..' Р±СѓРґРµС‚ РІРІРµРґС‘РЅ РґР°РЅРЅС‹Р№ С‚РµРєСЃС‚:\n{'..acolor2..'}'..v..'\n{'..acolor2..'}/fuelcars', 'Р—Р°РєСЂС‹С‚СЊ', '', 0) elseif not json[param1][1] and json[param1][2] then sampShowDialog(670, 'AHelper', '{'..acolor3..'}РџСЂРё /'..param1..' Р±СѓРґРµС‚ РІРІРµРґС‘РЅ РґР°РЅРЅС‹Р№ С‚РµРєСЃС‚:\n{'..acolor2..'}'..v..'\n{'..acolor2..'}/asc /sduty /sduty /sduty /sduty /sduty\n{'..acolor2..'}/sduty', 'Р—Р°РєСЂС‹С‚СЊ', '', 0) else sampShowDialog(670, 'AHelper', '{'..acolor3..'}РџСЂРё /'..param1..' Р±СѓРґРµС‚ РІРІРµРґС‘РЅ РґР°РЅРЅС‹Р№ С‚РµРєСЃС‚:\n{'..acolor2..'}'..v, 'Р—Р°РєСЂС‹С‚СЊ', '', 0) end
+		else sampShowDialog(670, 'AHelper', '{'..acolor3..'}Error: РєРѕР»РёС‡РµСЃС‚РІРѕ СЃС‚СЂРѕРє РїРѕРґРґРµСЂР¶РёРІР°РµС‚СЃСЏ С‚РѕР»СЊРєРѕ РѕС‚ 1 РґРѕ 10. РРЅР°С‡Рµ РЅРµ СЂР°Р±РѕС‚Р°РµС‚.', 'Р—Р°РєСЂС‹С‚СЊ', '', 0)
 		end
 	end
 end
@@ -1187,10 +1184,10 @@ function save()
 end
 function save1()
 	f = io.open('moonloader\\config\\offhelper.json', 'w')
-	f:write(encodeJson(table))
+	f:write(encodeJson(table1))
 	f:close()
 	f = io.open('moonloader\\config\\offhelper.json', 'r')
-	table = decodeJson(f:read("*a"))
+	table1 = decodeJson(f:read("*a"))
 	f:close()
 end
 function save2()
@@ -1204,9 +1201,9 @@ end
 function list11()
 	local vkls = {}
 	for i, v in ipairs(json.autorep) do
-		if json.autorep[i] then vkls[i] = 'Включено' elseif json.autorep[i] == false then vkls[i] = 'Выключено' end
+		if json.autorep[i] then vkls[i] = 'Р’РєР»СЋС‡РµРЅРѕ' elseif json.autorep[i] == false then vkls[i] = 'Р’С‹РєР»СЋС‡РµРЅРѕ' end
 	end
-	sampShowDialog(678, 'AHelper', '{'..acolor3..'}Информация\t{'..acolor3..'}Быстрый ответ на репорт\n{'..acolor2..'}Быстрый /sp\t{'..acolor2..'}'..vkls[1]..'\n{'..acolor2..'}Удаление сообщения при быстром /sp\t{'..acolor2..'}'..vkls[2]..'\n{'..acolor2..'}Быстрый /veh\t{'..acolor2..'}'..vkls[3]..'\n{'..acolor2..'}Удаление сообщения при быстром /veh\t{'..acolor2..'}'..vkls[4]..'\n{'..acolor2..'}Быстрый /gothere\t{'..acolor2..'}'..vkls[5]..'\n{'..acolor2..'}Удаление сообщения при быстром /gothere\t{'..acolor2..'}'..vkls[6]..'\n{'..acolor2..'}Отвечать только первым\t{'..acolor2..'}'..vkls[7], 'Закрыть', '', 4)
+	sampShowDialog(678, 'AHelper', '{'..acolor3..'}РРЅС„РѕСЂРјР°С†РёСЏ\t{'..acolor3..'}Р‘С‹СЃС‚СЂС‹Р№ РѕС‚РІРµС‚ РЅР° СЂРµРїРѕСЂС‚\n{'..acolor2..'}Р‘С‹СЃС‚СЂС‹Р№ /sp\t{'..acolor2..'}'..vkls[1]..'\n{'..acolor2..'}РЈРґР°Р»РµРЅРёРµ СЃРѕРѕР±С‰РµРЅРёСЏ РїСЂРё Р±С‹СЃС‚СЂРѕРј /sp\t{'..acolor2..'}'..vkls[2]..'\n{'..acolor2..'}Р‘С‹СЃС‚СЂС‹Р№ /veh\t{'..acolor2..'}'..vkls[3]..'\n{'..acolor2..'}РЈРґР°Р»РµРЅРёРµ СЃРѕРѕР±С‰РµРЅРёСЏ РїСЂРё Р±С‹СЃС‚СЂРѕРј /veh\t{'..acolor2..'}'..vkls[4]..'\n{'..acolor2..'}Р‘С‹СЃС‚СЂС‹Р№ /gothere\t{'..acolor2..'}'..vkls[5]..'\n{'..acolor2..'}РЈРґР°Р»РµРЅРёРµ СЃРѕРѕР±С‰РµРЅРёСЏ РїСЂРё Р±С‹СЃС‚СЂРѕРј /gothere\t{'..acolor2..'}'..vkls[6]..'\n{'..acolor2..'}РћС‚РІРµС‡Р°С‚СЊ С‚РѕР»СЊРєРѕ РїРµСЂРІС‹Рј\t{'..acolor2..'}'..vkls[7], 'Р—Р°РєСЂС‹С‚СЊ', '', 4)
 end
 function flood1()
 	lua_thread.create(waits, json.msg1[3], 'msg1', {})
@@ -1253,7 +1250,7 @@ function waits(text, param, time)
 				sampSendChat(v)
 				wait(time[i])
 			else
-				sampAddChatMessage('AHelper: введи текст сообщения!', color1)
+				sampAddChatMessage('AHelper: РІРІРµРґРё С‚РµРєСЃС‚ СЃРѕРѕР±С‰РµРЅРёСЏ!', color1)
 			end
 		end
 	end
@@ -1275,12 +1272,12 @@ function bind(iid, time)
 		if os.time() <= time then
 			if not sampIsChatInputActive() then
 				if isKeyJustPressed(vk.VK_M) or isKeyDown(vk.VK_M) then
-					sampSendChat('/mute '..iid..' 30 Упоминание родных')
+					sampSendChat('/mute '..iid..' 30 РЈРїРѕРјРёРЅР°РЅРёРµ СЂРѕРґРЅС‹С…')
 					break
 				end
 			end
 		else
-			sampAddChatMessage('AHelper: Время уже вышло.', color4)
+			sampAddChatMessage('AHelper: Р’СЂРµРјСЏ СѓР¶Рµ РІС‹С€Р»Рѕ.', color4)
 			break
 		end
 	end
@@ -1308,7 +1305,7 @@ function event.onSendCommand(command)
 	return {command}
 end
 
-function initializeRender()		-- clickwarp (с) FYP, спасибо за классную табуляцию!
+function initializeRender()		-- clickwarp (СЃ) FYP, СЃРїР°СЃРёР±Рѕ Р·Р° РєР»Р°СЃСЃРЅСѓСЋ С‚Р°Р±СѓР»СЏС†РёСЋ!
   font = renderCreateFont("Tahoma", 10, FCR_BOLD + FCR_BORDER)
 end
 function readFloatArray(ptr, idx)
@@ -1489,7 +1486,7 @@ end
 function chip(cl)
 	ips = {}
 	for word in string.gmatch(cl, "(%d+%p%d+%p%d+%p%d+)") do
-		table.insert(ips, { query = word })
+		ips[#ips+1] = { query = word }
 	end
 	if #ips > 0 then
 		data_json = cjson.encode(ips)
@@ -1511,7 +1508,7 @@ function chip(cl)
 							)
 						text =
 							text .. string.format(
-								"\n{FFF500}IP - {FF0400}%s\n{FFF500}Страна -{FF0400} %s\n{FFF500}Город -{FF0400} %s\n{FFF500}Провайдер -{FF0400} %s\n{FFF500}Растояние -{FF0400} %d  \n\n",
+								"\n{FFF500}IP - {FF0400}%s\n{FFF500}РЎС‚СЂР°РЅР° -{FF0400} %s\n{FFF500}Р“РѕСЂРѕРґ -{FF0400} %s\n{FFF500}РџСЂРѕРІР°Р№РґРµСЂ -{FF0400} %s\n{FFF500}Р Р°СЃС‚РѕСЏРЅРёРµ -{FF0400} %d  \n\n",
 								rdata[i]["query"],
 								rdata[i]["country"],
 								rdata[i]["city"],
@@ -1521,12 +1518,12 @@ function chip(cl)
                end
 				end
 				if text == "" then
-					text = " \n\t{FFF500}Ничего не найдено"
+					text = " \n\t{FFF500}РќРёС‡РµРіРѕ РЅРµ РЅР°Р№РґРµРЅРѕ"
 				end
-				showdialog("Информация о IP", text)
+				showdialog("РРЅС„РѕСЂРјР°С†РёСЏ Рѕ IP", text)
 			end,
 			function(err)
-				showdialog("Информация о IP", "Произошла ошибка \n" .. err)
+				showdialog("РРЅС„РѕСЂРјР°С†РёСЏ Рѕ IP", "РџСЂРѕРёР·РѕС€Р»Р° РѕС€РёР±РєР° \n" .. err)
 			end
 		)
 	end
@@ -1536,12 +1533,12 @@ function showdialog(name, rdata)
 		math.random(1000),
 		"{FF4444}" .. name,
 		rdata,
-		"Закрыть",
+		"Р—Р°РєСЂС‹С‚СЊ",
 		false,
 		0
 	)
 end
--- FChecker, спасибо за классную табуляцию!
+-- FChecker, СЃРїР°СЃРёР±Рѕ Р·Р° РєР»Р°СЃСЃРЅСѓСЋ С‚Р°Р±СѓР»СЏС†РёСЋ!
 function fchecker()
   while true do
 	wait(0)
@@ -1716,5 +1713,58 @@ function LIP.save(fileName, data)
 	end
 	file:write(contents);
 	file:close();
+	return LIP;
 end
-return LIP;
+
+function autoupdate(json_url, prefix) -- autoupdate
+  local dlstatus = require('moonloader').download_status
+  local json = getWorkingDirectory() .. '\\'..thisScript().name..'-version.json'
+  if doesFileExist(json) then os.remove(json) end
+  downloadUrlToFile(json_url, json,
+    function(id, status, p1, p2)
+      if status == dlstatus.STATUSEX_ENDDOWNLOAD then
+        if doesFileExist(json) then
+          local f = io.open(json, 'r')
+          if f then
+            local info = decodeJson(f:read('*a'))
+            updatelink = info.updateurl
+            updateversion = info.latest
+            f:close()
+            os.remove(json)
+            if updateversion ~= thisScript().version then
+              lua_thread.create(
+			  function(prefix)
+                local dlstatus = require('moonloader').download_status
+                local color = -1
+                sampAddChatMessage((prefix..'РћР±РЅР°СЂСѓР¶РµРЅРѕ РѕР±РЅРѕРІР»РµРЅРёРµ. РџС‹С‚Р°СЋСЃСЊ РѕР±РЅРѕРІРёС‚СЊСЃСЏ c '..thisScript().version..' РЅР° '..updateversion), color)
+                wait(250)
+                downloadUrlToFile(updatelink, thisScript().path,
+                  function(id3, status1, p13, p23)
+                    if status1 == dlstatus.STATUS_DOWNLOADINGDATA then
+                    elseif status1 == dlstatus.STATUS_ENDDOWNLOADDATA then
+                      sampAddChatMessage((prefix..'РћР±РЅРѕРІР»РµРЅРёРµ Р·Р°РІРµСЂС€РµРЅРѕ!'), color)
+                      goupdatestatus = true
+                      lua_thread.create(function() wait(500) thisScript():reload() end)
+                    end
+                    if status1 == dlstatus.STATUSEX_ENDDOWNLOAD then
+                      if goupdatestatus == nil then
+                        sampAddChatMessage((prefix..'РћР±РЅРѕРІР»РµРЅРёРµ РїСЂРѕС€Р»Рѕ РЅРµСѓРґР°С‡РЅРѕ. Р—Р°РїСѓСЃРєР°СЋ СѓСЃС‚Р°СЂРµРІС€СѓСЋ РІРµСЂСЃРёСЋ..'), color)
+                        update = false
+                      end
+                    end
+                  end
+                )
+                end, prefix
+              )
+            else
+              update = false
+            end
+          end
+        else
+          update = false
+        end
+      end
+    end
+  )
+  while update ~= false do wait(100) end
+end
