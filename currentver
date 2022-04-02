@@ -1,4 +1,5 @@
 {
   "updateurl": "https://raw.githubusercontent.com/Who-Who/AHelper-ATRP/main/ahelper.lua",
-  "latest": "02.04.2022"
+  "latest": "02.04.2022",
+  "inform": "\n{'..acolor1..'}Привет\n{'..acolor1..'}Пока"
 }
