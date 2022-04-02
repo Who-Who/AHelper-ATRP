@@ -1,6 +1,6 @@
 script_authors('jo_lac', 'Alexandr_Mansory', 'Radiant_Smith', 'FYP', 'drags')
 script_version('01.04.2022')
--- Используя данный скрипт, Вы автоматически подтверждаете то, что берёте на себя всю ответственность за действия, произошедшие при использовании данного скрипта. Авторы данного скрипта не несут ответственности за эти действия. Скрипт посылает запросы в интернет, чтобы получить местоположение игрока по ip. Не является стиллером. Но, используйте на свой страх и риск.
+-- Используя данный скрипт, Вы автоматически подтверждаете то, что берёте на себя всю ответственность за действия, произошедшие при использовании данного скрипта. Авторы данного скрипта не несут ответственности за эти действия. Скрипт посылает запросы в интернет, чтобы получить местоположение игрока по ip. Также имеется автообновление. Не является стиллером. Используйте на свой страх и риск.
 require 'lib.moonloader'
 require 'lib.sampfuncs'
 local table = require 'table'
@@ -1736,19 +1736,19 @@ function autoupdate(json_url, prefix) -- autoupdate
 			  function(prefix)
                 local dlstatus = require('moonloader').download_status
                 local color = -1
-                sampAddChatMessage((prefix..'Обнаружено обновление. Пытаюсь обновиться c '..thisScript().version..' на '..updateversion), color)
+                sampAddChatMessage((prefix..'Обнаружено обновление. Пытаюсь обновиться c '..thisScript().version..' на '..updateversion), color5)
                 wait(250)
                 downloadUrlToFile(updatelink, thisScript().path,
                   function(id3, status1, p13, p23)
                     if status1 == dlstatus.STATUS_DOWNLOADINGDATA then
                     elseif status1 == dlstatus.STATUS_ENDDOWNLOADDATA then
-                      sampAddChatMessage((prefix..'Обновление завершено!'), color)
+                      sampAddChatMessage((prefix..'Обновление завершено!'), color5)
                       goupdatestatus = true
                       lua_thread.create(function() wait(500) thisScript():reload() end)
                     end
                     if status1 == dlstatus.STATUSEX_ENDDOWNLOAD then
                       if goupdatestatus == nil then
-                        sampAddChatMessage((prefix..'Обновление прошло неудачно. Запускаю устаревшую версию..'), color)
+                        sampAddChatMessage((prefix..'Обновление прошло неудачно. Напиши в ВК - @jo_lac. Запускаю устаревшую версию..'), color5)
                         update = false
                       end
                     end
@@ -1758,7 +1758,8 @@ function autoupdate(json_url, prefix) -- autoupdate
               )
             else
               update = false
-            end
+			  sampAddChatMessage((prefix..'Обновления не обнаружено, у Вас установлена последняя версия.'), color5)
+			end
           end
         else
           update = false
