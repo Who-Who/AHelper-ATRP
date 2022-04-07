@@ -1,5 +1,5 @@
 {
   "updateurl": "https://raw.githubusercontent.com/Who-Who/AHelper-ATRP/main/ahelper.lua",
-  "latest": "02.04.2022 #5",
-  "inform": "\nПопытка починить оффстатс"
+  "latest": "07.04.2022",
+  "inform": "\nПолностью перенесены настройки на ImGui.\nРазделён /ahelper на 2 части - /ahelper и /acommands.\nУдали JSON после обновления!"
 }
