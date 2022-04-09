@@ -1,5 +1,5 @@
 {
   "updateurl": "https://raw.githubusercontent.com/Who-Who/AHelper-ATRP/main/ahelper.lua",
-  "latest": "08.04.2022",
-  "inform": "\nПочинил настройку /cmd1-/cmd3\nПоправил текст в некоторых местах\nВместо /ahelper теперь /helper, вместо /acommands - /cmds"
+  "latest": "09.04.2022",
+  "inform": "\nИзменил информационный диалог (/cmds > 1 и /helper > 1)\nТеперь можно передвигать окна\nМелкие исправления"
 }
