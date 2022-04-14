@@ -1,5 +1,5 @@
 {
   "updateurl": "https://raw.githubusercontent.com/Who-Who/AHelper-ATRP/main/ahelper.lua",
   "latest": "14.04.2022",
-  "inform": "\nПоменял /helper и /cmds на /ah\nДобавил переключение на самп диалоги вместо imgui\nМелкие исправления"
+  "inform": "\nПоменял /helper и /cmds на /ah\nДобавил переключение на самп диалоги вместо imgui(/chmode)\nМелкие исправления"
 }
