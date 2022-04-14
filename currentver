@@ -1,5 +1,5 @@
 {
   "updateurl": "https://raw.githubusercontent.com/Who-Who/AHelper-ATRP/main/ahelper.lua",
-  "latest": "09.04.2022",
-  "inform": "\nИзменил информационный диалог (/cmds > 1 и /helper > 1)\nТеперь можно передвигать окна\nМелкие исправления"
+  "latest": "14.04.2022",
+  "inform": "\nПоменял /helper и /cmds на /ah\nДобавил переключение на самп диалоги вместо imgui\nМелкие исправления"
 }
