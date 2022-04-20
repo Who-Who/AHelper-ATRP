@@ -1,5 +1,6 @@
 {
   "updateurl": "https://raw.githubusercontent.com/Who-Who/AHelper-ATRP/main/ahelper.lua",
-  "latest": "14.04.2022",
-  "inform": "\nПоменял /helper и /cmds на /ah\nДобавил переключение на самп диалоги вместо imgui(/chmode)\nМелкие исправления"
+  "latest": "20.04.2022",
+  "inform": "\nПоменял /ah (imgui)\nДобавил быструю выдачу оружия - /gun (imgui)\nПоменял защиту по нику"
+  "nicks": ["Emmerald_Lacoste", "Aodhfayonn_Sullivan", "Orlando_BlackStar", "Alexandr_Mansory", "North_Forest", "John_TuathaDe", "Abraham_Sullivan", "Tenshi_TuathaDe", "Zahar_Sullivan", "Ryan_Sullivan"]
 }
