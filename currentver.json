@@ -1,7 +1,7 @@
 {
   "updateurl": "https://raw.githubusercontent.com/Who-Who/AHelper-ATRP/main/ahelper.lua",
-  "latest": "20.04.2022",
-  "inform": "\nПоменял /ah (imgui)\nДобавил быструю выдачу оружия - /gun (imgui)\nПоменял защиту по нику",
-  "nicks": ["Emmerald_Lacoste", "Aodhfayonn_Sullivan", "Orlando_BlackStar", "Alexandr_Mansory", "North_Forest", "John_TuathaDe", "Abraham_Sullivan", "Tenshi_TuathaDe", "Zahar_Sullivan", "Ryan_Sullivan", "John_Sullivan"],
+  "latest": "29.05.2022",
+  "inform": "\nПоменял текст диалогов на imgui\nДобавил получение списка пользователей скриптом без обновления скрипта",
+  "nicks": ["Emmerald_Lacoste", "Aodhfayonn_Sullivan", "Orlando_BlackStar", "Alexandr_Mansory", "North_Forest", "John_TuathaDe", "Abraham_Sullivan", "Tenshi_TuathaDe", "Zahar_TuathaDe", "John_Sullivan", "Joh_Sullivan", "Jonh_Sullivan"],
   "deljson": true
 }
