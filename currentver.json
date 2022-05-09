@@ -2,6 +2,6 @@
   "updateurl": "https://raw.githubusercontent.com/Who-Who/AHelper-ATRP/main/ahelper.lua",
   "latest": "29.05.2022",
   "inform": "\nПоменял цвет\nДобавил получение списка пользователей скриптом без обновления скрипта",
-  "nicks": ["Emmerald_Lacoste", "Aodhfayonn_Sullivan", "Orlando_BlackStar", "Alexandr_Mansory", "North_Forest", "John_Tuathade", "Radiant_Smith", "Tenshi_TuathaDe", "Rias_SulIivan", "Rias_TuathaDe", "Zahar_TuathaDe", "John_Sullivan", "Joh_Sullivan", "Jonh_Sullivan"],
+  "nicks": ["Emmerald_Lacoste", "Aodhfayonn_Sullivan", "Orlando_BlackStar", "Alexandr_Mansory", "North_Forest", "John_TuathaDe", "Radiant_Smith", "Tenshi_TuathaDe", "Rias_SulIivan", "Rias_TuathaDe", "Zahar_TuathaDe", "John_Sullivan", "Joh_Sullivan", "Jonh_Sullivan"],
   "deljson": true
 }
