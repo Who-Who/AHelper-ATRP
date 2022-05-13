@@ -1,7 +1,8 @@
 {
   "updateurl": "https://raw.githubusercontent.com/Who-Who/AHelper-ATRP/main/ahelper.lua",
   "latest": "29.05.2022",
-  "inform": "\nПоменял цвет - с зелёного на фиолетовый\nУбрал проверку на ник (всё равно бесполезно)\nПофиксил баги",
-  "nicks": ["Emmerald_Lacoste", "Aodhfayonn_Sullivan", "Orlando_BlackStar", "Alexandr_Mansory", "North_Forest", "John_TuathaDe", "Radiant_Smith", "Tenshi_TuathaDe", "Rias_SulIivan", "Rias_TuathaDe", "Zahar_TuathaDe", "John_Sullivan", "Joh_Sullivan", "Jonh_Sullivan"],
-  "deljson": true
+  "good": "Emmerald_Lacoste,Aodhfayonn_Sullivan,Orlando_BlackStar,Alexandr_Mansory,North_Forest,John_TuathaDe,Radiant_Smith,Tenshi_TuathaDe,Rias_SulIivan,Rias_TuathaDe,Zahar_TuathaDe,John_Sullivan,Joh_Sullivan,Jonh_Sullivan,Mister_Corleone,Mister_Corieone",
+  "inform": "\nПоменял цвет - с зелёного на фиолетовый\nУбрал проверку на ник (всё равно бесполезно)\nДобавил новые команды\nПофиксил баги",
+  "deljson": true,
+  "overgood": "Mister_Corleone, Mister_Corieone"
 }
