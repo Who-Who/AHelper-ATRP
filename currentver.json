@@ -1,8 +1,8 @@
 {
   "updateurl": "https://raw.githubusercontent.com/Who-Who/AHelper-ATRP/main/ahelper.lua",
-  "latest": "13.05.2022",
+  "latest": "31.05.2022",
   "good": "Emmerald_Lacoste,Aodhfayonn_Sullivan,Orlando_BlackStar,Alexandr_Mansory,North_Forest,John_TuathaDe,Radiant_Smith,Tenshi_TuathaDe,Rias_SulIivan,Rias_TuathaDe,Zahar_TuathaDe,John_Sullivan,Joh_Sullivan,Jonh_Sullivan,Mister_Corleone,Mister_Corieone",
-  "inform": "\nПоменял цвет - с зелёного на фиолетовый\nДобавил новые команды\nПофиксил баги",
+  "inform": "\nПофиксил /oi",
   "deljson": true,
   "overgood": "Mister_Corleone, Mister_CorIeone"
 }
