@@ -1,8 +1,8 @@
 {
   "updateurl": "https://raw.githubusercontent.com/Who-Who/AHelper-ATRP/main/ahelper.lua",
   "latest": "31.05.2022",
-  "good": "Emmerald_Lacoste,Aodhfayonn_Sullivan,Orlando_BlackStar,Alexandr_Mansory,North_Forest,John_TuathaDe,Radiant_Smith,Tenshi_TuathaDe,Rias_SulIivan,Rias_TuathaDe,Zahar_TuathaDe,John_Sullivan,Joh_Sullivan,Jonh_Sullivan,Mister_Corleone,Mister_Corieone",
+  "good": "Emmerald_Lacoste,Aodhfayonn_Sullivan,Orlando_BlackStar,Alexandr_Mansory,North_Forest,John_TuathaDe,Tenshi_TuathaDe,Rias_SulIivan,Rias_TuathaDe,Zahar_TuathaDe,John_Sullivan,Joh_Sullivan,Jonh_Sullivan,Anonimus_Corleone",
   "inform": "\nПофиксил /oi",
   "deljson": true,
-  "overgood": "Mister_Corleone, Mister_CorIeone, Radiant_Smith, Anonimus_Corleone"
+  "overgood": "Radiant_Smith"
 }
